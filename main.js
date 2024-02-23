@@ -2,13 +2,13 @@ var common = require('common');
 var elegant = require('elegant.work');
 var struct = require('structure');
 
-function func(){
+function func() {
     // console.log(`testFunction is running  :${Game.spawns[common.SPAWN_HOME].room.find(FIND_MY_CREEPS).length}`);
     // mySpawn.createCreep('attacker');
-    
+
 }
 
-module.exports.loop = function() {
+module.exports.loop = function () {
     //TODO : 
     // source harvester dynamic balance
     func();
@@ -19,7 +19,7 @@ module.exports.loop = function() {
     elegant.creepsDo();
     struct.structuresDo();
 
-    
+
 }
 
 

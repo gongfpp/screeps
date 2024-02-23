@@ -8,7 +8,7 @@
  */
 
 module.exports = {
-    isFight:false,
-    rallyPoint:{posx:24,posy:24}
-    
+    isFight: false,
+    rallyPoint: { posx: 24, posy: 24 }
+
 };
