@@ -32,7 +32,7 @@ module.exports = {
     LONG_PERIROD_TICKS : 1500,
     //LINK
     SOURCE_LINK:'65d6221f8ef10e17e67a93ca',
-    TARGET_LINK:'65d6204cd4d90514e7ad8836',
+    TARGET_LINK:'65d8d006ecef434ff888cb0f',
     TARGET_LINK_2:'111',
     //STORAGE
     STORAGE_ID:'65d5ad955e8efe73adf434b1',

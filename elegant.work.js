@@ -131,7 +131,6 @@ module.exports = {
         if(this.goUpgrade(creep)){
             return true;
         }
-        
         this.iAmLazyDog(creep);
         return false;
     },
@@ -292,7 +291,6 @@ module.exports = {
            return true;
        }
        return true;
-    
         //根据优先级排序
         // var damagedStructures = creep.room.find(FIND_STRUCTURES, {
         //     filter: (structure) => structure.hits < structure.hitsMax
@@ -383,9 +381,11 @@ module.exports = {
         if(creep.store[RESOURCE_ENERGY] > creep.store.getCapacity() / 4){
             return false;
         }
-        var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES,10, {
-            filter: (resource) => resource.resourceType == RESOURCE_ENERGY
-        });
+        // var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES,10, {
+        //     filter: (resource) => resource.resourceType == RESOURCE_ENERGY
+        // });
+        var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES,10);
+        
         if(droppedResources.length > 0) {
             if(creep.pickup(droppedResources[0]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(droppedResources[0],{visualizePathStyle: {stroke: '#ff0000'}});
