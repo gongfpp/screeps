@@ -63,7 +63,6 @@ module.exports = {
         // if (this.goStore(creep)) {
         //     return true;
         // }
-        console.log('aa');
         if (this.goStoreContainers(creep)) {
             return true;
         }
