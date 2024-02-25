@@ -13,111 +13,92 @@
 var constant = require('constant');
 
 module.exports = {
-    // isBuildExist : false,
-    repairPriority: {
-        [STRUCTURE_TOWER]: 1,
-        [STRUCTURE_SPAWN]: 2,
-        [STRUCTURE_EXTENSION]: 3,
-        [STRUCTURE_CONTAINER]: 4,
-        [STRUCTURE_WALL]: 5,
-        [STRUCTURE_ROAD]: 6,
-        [STRUCTURE_STORAGE]: 7,
-    },
     creepsDo: function () {
         //creeps do
         for (const idx in Game.creeps) {
             const creep = Game.creeps[idx];
             if (creep.memory.role == 'harvester') {
                 did = this.harvesterDo(creep);
-                continue;
-                // console.log(`${creep.name} do ${did}`);
             }
-            if (creep.memory.role == 'supporter') {
-                this.supporterDo(creep);
-                continue;
+            else if (creep.memory.role == 'supporter') {
+                did = this.supporterDo(creep);
             }
-            if (creep.memory.role == 'upgrader') {
+            else if (creep.memory.role == 'upgrader') {
                 this.upgraderDo(creep);
-                continue;
             }
-            if (creep.memory.role == 'builder') {
+            else if (creep.memory.role == 'builder') {
                 this.builderDo(creep);
-                continue;
             }
-            if (creep.memory.role == 'xiangzi') {
+            else if (creep.memory.role == 'xiangzi') {
                 did = this.xiangziDo(creep);
                 console.log(`${creep.name} do ${did}`);
-                continue;
             }
-            if (creep.memory.role == 'attacker') {
+            else if (creep.memory.role == 'attacker') {
                 this.attackerDo(creep);
-                continue;
+
             }
         }
     },
-    workerDo: function (creep) {
-        console.log('Worker DO ');
-    },
     harvesterDo: function (creep) {
-        if(this.pickupByChance(creep)){
-            console.log('pickupByChance'+creep.name);
+        if (this.pickupByChance(creep)) {
             return 'pickupByChance';
         }
         if (this.goHarvest(creep)) {
-            // console.log('gggg');
             return 'goHarvest';
         }
-        // if (this.goStore(creep)) {
-        //     return true;
-        // }
-        if (this.goStoreContainers(creep)) {
+
+        if (this.goStoreContainers(creep, 3)) {
             return 'goStoreContainers';
         }
         if (this.goUpgrade(creep)) {
-            return  'goUpgrade';
+            return 'goUpgrade';
         }
 
         this.iAmLazyDog(creep);
         return false;
     },
     supporterDo: function (creep) {
-        if (this.goTakeResource(creep)) {
-            return true;
+        if (this.pickupByChance(creep)) {
+            return 'pickupByChance';
+        }
+        if (this.goTakeResource(creep, 20)) {
+            return 'goTakeResource';
         }
         if (this.goWithdrawEnergy(creep)) {
-            return true;
+            return 'goWithdrawEnergy';
         }
-        if (this.goRepairRanged(creep)) {
-            return true;
+        if (this.goRepairRanged(creep, 3)) {
+            return 'goRepairRanged';
         }
-        if (this.goStoreExtensions(creep)) {
-            return true;
+        if (this.goStoreExtensions(creep, 20)) {
+            return 'goStoreExtensions';
         }
-        if (this.goBuild(creep)) {
-            return true;
-        }
+        // if (this.goBuild(creep, 5)) {
+        //     return 'goBuild';
+        // }
         if (this.goRepair(creep)) {
-            return true;
+            return 'goRepair';
         }
         if (this.goGenerateSafeMode(creep)) {
-            return true;
+            return 'goGenerateSafeMode';
         }
         if (this.goUpgrade(creep)) {
-            return true;
+            return 'goUpgrade';
         }
 
         this.iAmLazyDog(creep);
         return false;
     },
     upgraderDo: function (creep) {
-        // if (this.goTakeResource(creep)) {
-        //     return true;
-        // }
+
         if (this.goWithdrawEnergy(creep)) {
-            return true;
+            return 'goWithdrawEnergy';
+        }
+        if (this.goStoreExtensions(creep, 2)) {
+            return 'goStoreExtensions';
         }
         if (this.goUpgrade(creep)) {
-            return true;
+            return 'goUpgrade';
         }
 
         this.iAmLazyDog(creep);
@@ -148,36 +129,51 @@ module.exports = {
         }
 
         //attack tower if exist
-
+        this.goFlagRally(creep, 'attackPos');
 
         //patrol if no target to fight
 
         return false;
     },
     xiangziDo: function (creep) {
-        if (this.goTakeResource(creep)) {
+        if (this.goTakeResource(creep, 20)) {
             return 'goTakeResource';
         }
         if (this.goWithdrawFromStorage(creep)) {
             return 'goWithdrawFromStorage';
-        
-        }
-        if (this.goRepairRanged(creep)) {
-            return 'goRepairRanged';
+
         }
         if (this.goFillLink(creep)) {
             return 'goFillLink';
         }
-        if (this.goBuild(creep, 3)) {
-            console.log('xiangzi go build');
+        if (this.goStoreExtensions(creep, 6)) {
+            return 'goStoreExtensions';
+        }
+
+        if (this.goBuild(creep, 5)) {
             return 'goBuild';
         }
-        if(this.goStoreExtensions(creep)){
-            return 'goStoreExtensions';
+        if (this.goRepairRanged(creep, 6)) {
+            return 'goRepairRanged';
+        }
+
+        if (this.goFlagRally(creep, 'xiangziRally')) {
+            return 'goFlagRally';
         }
         // this.iAmLazyDog(creep);
         return false;
 
+    },
+    goFlagRally: function (creep, flagName) {
+        const flag = Game.flags[flagName];
+        if (!flag) {
+            return false;
+        }
+        if (creep.pos.isEqualTo(flag.pos)) {
+            return false;
+        }
+        creep.moveTo(flag, { visualizePathStyle: { stroke: '#ffffff' } });
+        creep.say('Go:' + flagName);
     },
     goFillLink: function (creep) {
         const sourceLink = Game.getObjectById(constant.SOURCE_LINK);
@@ -190,21 +186,35 @@ module.exports = {
             creep.say('	🪕' + 'Link!');
             return true;
         }
+
+        // creep.say('Link but '+)
         return true;
+        // return 'transfer failed :'+creep.transfer(sourceLink, RESOURCE_ENERGY);
     },
-    goAttack: function (creep) {
+    goWithdrawFromTargetLink: function (creep) {
+        // 检查 Creep 的能量状态   TODO put it swap goHarvest();
+        if (creep.store[RESOURCE_ENERGY] == 0) {
+            const source = Game.getObjectById(constant.TARGET_LINK);
+            if (source && source.store[RESOURCE_ENERGY] > 0) {
+                // 从容器或存储中提取能量
+                if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(source, { visualizePathStyle: { stroke: '#ff5100' } });
+                    creep.say('Get E');
 
-    },
-    goWorkInRange: function (creep, distance) {
+                }
+                return true;
+            }
+            creep.say('No E');
 
-    },
-    goWork: function (creep) {
+            return true;
+        }
 
+        //有能量，不需要去提取能量
+        return false;
     },
     goWithdrawFromStorage: function (creep) {
         // 检查 Creep 的能量状态   TODO put it swap goHarvest();
         if (creep.store[RESOURCE_ENERGY] == 0) {
-            // 寻找最近的容器或存储
             const source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (
@@ -216,12 +226,12 @@ module.exports = {
                 // 从容器或存储中提取能量
                 if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(source, { visualizePathStyle: { stroke: '#ff5100' } });
-                    creep.say('Get Energy');
+                    creep.say('Get E');
 
                 }
                 return true;
             }
-            creep.say('No Energy!');
+            creep.say('No E');
 
             return true;
         }
@@ -245,12 +255,12 @@ module.exports = {
                 // 从容器或存储中提取能量
                 if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(source, { visualizePathStyle: { stroke: '#ff5100' } });
-                    creep.say('Get Energy');
+                    creep.say('Get E');
 
                 }
                 return true;
             }
-            creep.say('No Energy!');
+            creep.say('No E');
 
             return true;
         }
@@ -259,8 +269,7 @@ module.exports = {
         return false;
     },
     goHarvest: function (creep) {
-        // console.log(creep.store.getUsedCapacity(RESOURCE_ENERGY));
-        // console.log(creep.memory.isHarvesting);
+
         //收集资源满了
         if (creep.memory.isHarvesting && creep.store.getFreeCapacity() == 0) {
             creep.memory.isHarvesting = false;
@@ -306,7 +315,7 @@ module.exports = {
 
             if (creep.build(target) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, { visualizePathStyle: { stroke: '#b88114' } });
-                creep.say('🛠️' + 'Build!');
+                creep.say('🛠️');
             }
             return true;
         } else {
@@ -321,7 +330,7 @@ module.exports = {
 
             if (creep.build(target) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, { visualizePathStyle: { stroke: '#b88114' } });
-                creep.say('🛠️' + 'Build!');
+                creep.say('🛠️');
             }
             return true;
         }
@@ -362,8 +371,8 @@ module.exports = {
         // });
 
     },
-    goRepairRanged: function (creep) {
-        const targets = creep.pos.findInRange(FIND_STRUCTURES, constant.SUPPORTER_REPAIR_RANGE, {
+    goRepairRanged: function (creep, range) {
+        const targets = creep.pos.findInRange(FIND_STRUCTURES, range, {
             filter: (s) => (s.structureType == STRUCTURE_ROAD
                 || s.structureType == STRUCTURE_CONTAINER
                 || s.structureType == STRUCTURE_STORAGE
@@ -381,15 +390,14 @@ module.exports = {
 
         if (creep.repair(target) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, { visualizePathStyle: { stroke: '#e63995' } });
-            creep.say('repair range!');
+            creep.say('repair:' + range);
             return true;
         }
-        creep.say('repairing!');
+        creep.say('Ring!');
         return true;
     },
-    goStoreExtensions: function (creep) {
-
-        const storeTargets = creep.pos.findInRange(FIND_STRUCTURES, constant.STORE_RANGE_MAX,
+    goStoreExtensions: function (creep, range) {
+        const storeTargets = creep.pos.findInRange(FIND_STRUCTURES, range,
             {
                 filter: (structure) => {
                     return (
@@ -407,82 +415,85 @@ module.exports = {
                 creep.say('	🪕' + 'Store!')
                 return true;
             }
-
             return true;
         }
         return false;
     },
-    goStoreContainers: function (creep) {
-        //only work do goStore ,so range should be not too big 
-        // console.log('In goStore');
-        const storeTargets = creep.pos.findInRange(FIND_STRUCTURES, constant.STORE_RANGE_MAX,
+    goStoreContainers: function (creep, range) {
+        const storeTargets = creep.pos.findInRange(FIND_STRUCTURES, range,
             {
                 filter: (structure) => {
                     return ((
                         structure.structureType == STRUCTURE_CONTAINER
                         || structure.structureType == STRUCTURE_STORAGE
                         || structure.structureType == STRUCTURE_LINK
+                        || structure.structureType == STRUCTURE_EXTENSION
                     ) && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0)
                 }
             })
         if (storeTargets.length > 0) {
             const target = creep.pos.findClosestByPath(storeTargets);
-            this.dontBlockTheSource(creep, target);
             if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(target, { visualizePathStyle: { stroke: '#d174a8' } });
                 creep.say('	🪕' + 'Store!')
                 return true;
             }
-
             return true;
         }
+        console.log(JSON.stringify(creep.pos));
+        creep.say('No Store');
         return false;
     },
     // 如果当前所在的pos有resource在地上，就顺便pickup
     pickupByChance: function (creep) {
-        var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 0);
-        if (droppedResources.length > 0) {
-            if (creep.pickup(droppedResources[0]) != OK) {
-                creep.say('NO PICKUP !');
-                return false;
+        var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 1);
+        if (droppedResources.length > 0 && creep.store.getFreeCapacity() > 20) {
+            if (creep.pickup(droppedResources[0]) == ERR_NOT_IN_RANGE) {
+                // creep.say('NO PICKUP !');
+                creep.moveTo(droppedResources[0]);
+                return true;
             }
-            creep.say('Picked up!');
+            creep.say('Picked');
+            // console.log('Picked up DROPPED_RESOURCES by chance :' + creep.name);
             return true;
         }
         return false;
     },
-    goTakeResource: function (creep) {
+    goTakeResource: function (creep, range) {
         if (creep.store[RESOURCE_ENERGY] > creep.store.getCapacity() / 4) {
             return false;
         }
-        // var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES,10, {
-        //     filter: (resource) => resource.resourceType == RESOURCE_ENERGY
-        // });
-        var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 50);
+        var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, range, { filter: (drop) => drop.amount > 20 });
 
         if (droppedResources.length > 0) {
             if (creep.pickup(droppedResources[0]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(droppedResources[0], { visualizePathStyle: { stroke: '#ff0000' } });
             }
-            creep.say('🚬' + 'drops!');
+            creep.say('drops!');
             return true;
         }
-        var ruins = creep.room.find(FIND_RUINS, {
-            filter: (ruin) => ruin.store[RESOURCE_ENERGY] > 0
-        });
+        const tombstones = creep.pos.findInRange(FIND_TOMBSTONES, range, { filter: (t) => t.store[RESOURCE_ENERGY] > 20 });
+        if (tombstones.length > 0) {
+            if (creep.withdraw(tombstones[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(tombstones[0], { visualizePathStyle: { stroke: '#ff0000' } });
+            }
+            creep.say('tombstone!');
+            return true;
+        }
+
+        var ruins = creep.pos.findInRange(FIND_RUINS, range, { filter: (ruin) => ruin.store[RESOURCE_ENERGY] > 20 });
         if (ruins.length > 0) {
             if (creep.withdraw(ruins[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(ruins[0], { visualizePathStyle: { stroke: '#ff0000' } });
             }
-            creep.say('🚬' + 'ruins!');
+            creep.say('ruins!');
             return true;
         }
 
         return false;
     },
     goGenerateSafeMode: function (creep) {
-        if (creep.room.controller.safeModeAvailable > 1
-            || creep.store[RESOURCE_ENERGY] < 1000) {
+        if (creep.room.controller.safeModeAvailable > constant.SAFE_MODE_COUNT) {
             return false;
         }
 
@@ -496,11 +507,20 @@ module.exports = {
         this.dontBlockTheSource(creep, creep.room.controller);
         if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
             creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
-            creep.say('🛐' + 'Upgrade');
+            creep.say('Up');
             return true;
         }
-        //用升级来保底，因为controller肯定在
-        return true;
+
+        if (creep.upgradeController(creep.room.controller) == OK) {
+            if (creep.pos.findInRange(creep.room.controller, 2).length == 0) {
+                creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
+            }
+            return true;
+
+        }
+        console.log('Upgrade Failed ：' + creep.upgradeController(creep.room.controller));
+        creep.say('Upgrade G!');
+        return false;
     },
     goMove: function (creep, targetPos) {
         creep.moveTo(targetPos, {

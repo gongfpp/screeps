@@ -1,0 +1,40 @@
+[
+  {
+    "room": {
+      "name": "E54N51",
+      "energyAvailable": 517,
+      "energyCapacityAvailable": 1650,
+      "visual": {
+        "roomName": "E54N51"
+      }
+    },
+    "pos": {
+      "x": 33,
+      "y": 38,
+      "roomName": "E54N51"
+    },
+    "id": "5bbcb0409099fc012e63bcd0",
+    "energy": 0,
+    "energyCapacity": 3000,
+    "ticksToRegeneration": 21
+  },
+  {
+    "room": {
+      "name": "E54N51",
+      "energyAvailable": 517,
+      "energyCapacityAvailable": 1650,
+      "visual": {
+        "roomName": "E54N51"
+      }
+    },
+    "pos": {
+      "x": 33,
+      "y": 40,
+      "roomName": "E54N51"
+    },
+    "id": "5bbcb0409099fc012e63bcd1",
+    "energy": 1758,
+    "energyCapacity": 3000,
+    "ticksToRegeneration": 168
+  }
+]

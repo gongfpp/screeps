@@ -16,12 +16,15 @@ module.exports = {
         //Fight If Enemy Come
         if (Game.spawns[constant.SPAWN_HOME].room.find(FIND_HOSTILE_CREEPS).length > 0) {
             constant.IsUnderAttack++;
-            this.createAttacker('attacker');
             console.log(`[commonCheck create attacker] constant.IsUnderAttack: ${constant.IsUnderAttack}`);
         } else {
             constant.IsUnderAttack = 0;
         }
 
+
+        if(constant.IsUnderAttack > 30){
+            this.createAttacker('attacker');
+        }
 
         //Activate Safe Mode if Cant Win
         if (Game.spawns[constant.SPAWN_HOME].hits < Game.spawns[constant.SPAWN_HOME].hitsMax / 2
@@ -54,47 +57,64 @@ module.exports = {
         if (harvesters.length < constant.HAVERSTER_MAX_NUM) {
             this.createHarvesterCreep();
             return true;
-            // console.log(`[common] harvesters num : ${harvesters.length}`);
         }
-
+        if (xiangzis.length < constant.XIANGZI_MAX_NUM) {
+            this.createGeneralCarryer('xiangzi');
+            return true;
+        }
         if (supporters.length < constant.SUPPORTER_MAX_NUM) {
-            this.createGeneralWorker('supporter');
-            //   console.log(`[common] supporters num : ${supporters.length}`);
+            this.createGeneralCarryer('supporter');
             return true;
         }
 
         if (upgraders.length < constant.UPGRADER_MAX_NUM) {
-            this.createGeneralWorker('upgrader');
+            this.createStandWorker('upgrader');
             return true;
         }
 
         if (builders.length < constant.BUILDER_MAX_NUM) {
-            this.createGeneralWorker('builder');
-            return true;
-        }
-        if (xiangzis.length < constant.XIANGZI_MAX_NUM) {
-            this.createGeneralWorker('xiangzi');
+            this.createGeneralCarryer('builder');
             return true;
         }
 
-
-
+    },
+    createStandWorker: function (roleName) {
+        Game.spawns[constant.SPAWN_HOME].spawnCreep([
+            WORK, WORK, CARRY, MOVE,
+            WORK, WORK, CARRY, MOVE,
+            WORK, WORK, CARRY, MOVE,
+            WORK, WORK, CARRY, MOVE
+        ]
+            , roleName + Game.time
+            , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
+    },
+    createGeneralCarryer: function (roleName) {
+        Game.spawns[constant.SPAWN_HOME].spawnCreep([
+            WORK, CARRY, MOVE, MOVE,
+            WORK, CARRY, MOVE, MOVE,
+            WORK, CARRY, MOVE, MOVE,
+            WORK, CARRY, MOVE, MOVE
+        ]
+            , roleName + Game.time
+            , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
     },
     createGeneralWorker: function (roleName) {
         Game.spawns[constant.SPAWN_HOME].spawnCreep([
-            WORK, CARRY, MOVE,
-            WORK, CARRY, MOVE,
-            // WORK, CARRY, MOVE,
-            WORK, CARRY, MOVE
+            WORK, WORK, WORK,
+            WORK, WORK, WORK,
+            CARRY, CARRY, CARRY,
+            MOVE, MOVE, MOVE,
+            MOVE, MOVE, MOVE,
+            MOVE, MOVE, MOVE
         ]
             , roleName + Game.time
             , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
     },
     createAttacker: function () {
         Game.spawns['Spawn1'].spawnCreep([
-            TOUGH,ATTACK,MOVE,
-            TOUGH,ATTACK,MOVE,
-            TOUGH,ATTACK,MOVE
+            TOUGH, ATTACK, MOVE,
+            TOUGH, ATTACK, MOVE,
+            TOUGH, ATTACK, MOVE
         ]
             , 'attacker' + Game.time
             , {
@@ -111,7 +131,8 @@ module.exports = {
                 c.memory.targetSourceId == s.id
             }).length;
         }
-
+        console.log(JSON.stringify(sources));
+        console.log(JSON.stringify(harvestersPerSource));
         let targetSourceId = sources[0].id;
         let minSourceWorkerNum = Infinity;
 
@@ -122,12 +143,12 @@ module.exports = {
             }
         }
         let ret = Game.spawns[constant.SPAWN_HOME].spawnCreep([
-                WORK, CARRY, MOVE, //200 for each row
-                // WORK, CARRY, MOVE,
-                WORK, CARRY, MOVE,
-                WORK, CARRY, MOVE
-
-            ]
+            WORK, WORK, WORK,
+            WORK, WORK, WORK,
+            CARRY, CARRY, CARRY,
+            MOVE, MOVE, MOVE,
+            MOVE, MOVE, MOVE
+        ]
             , 'harvester' + Game.time
             , {
                 memory: {

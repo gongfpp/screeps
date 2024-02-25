@@ -9,6 +9,18 @@
 
 module.exports = {
     isFight: false,
-    rallyPoint: { posx: 24, posy: 24 }
+    rallyPoint: { posx: 24, posy: 24 },
+    attackerNum : 5 , 
+    battleDo:function() {
+        // console.log('battle!');
+        if(!this.isFight){
+            return false;
+        }
+
+        attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'attacker');
+        if(attackers.length < this.attackerNum){
+            
+        }
+    }
 
 };
