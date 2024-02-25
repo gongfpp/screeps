@@ -84,7 +84,7 @@ module.exports = {
         Game.spawns[constant.SPAWN_HOME].spawnCreep([
             WORK, CARRY, MOVE,
             WORK, CARRY, MOVE,
-            WORK, CARRY, MOVE,
+            // WORK, CARRY, MOVE,
             WORK, CARRY, MOVE
         ]
             , roleName + Game.time
@@ -92,9 +92,9 @@ module.exports = {
     },
     createAttacker: function () {
         Game.spawns['Spawn1'].spawnCreep([
-            TOUGH, TOUGH, TOUGH,
-            ATTACK, ATTACK, ATTACK,
-            MOVE, MOVE, MOVE
+            TOUGH,ATTACK,MOVE,
+            TOUGH,ATTACK,MOVE,
+            TOUGH,ATTACK,MOVE
         ]
             , 'attacker' + Game.time
             , {
@@ -121,9 +121,9 @@ module.exports = {
                 targetSourceId = sourceId;
             }
         }
-        let ret = Game.spawns[constant.SPAWN_HOME].spawnCreep(
-            [WORK, CARRY, MOVE, //200 for each row
-                WORK, CARRY, MOVE,
+        let ret = Game.spawns[constant.SPAWN_HOME].spawnCreep([
+                WORK, CARRY, MOVE, //200 for each row
+                // WORK, CARRY, MOVE,
                 WORK, CARRY, MOVE,
                 WORK, CARRY, MOVE
 

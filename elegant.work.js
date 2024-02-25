@@ -28,7 +28,9 @@ module.exports = {
         for (const idx in Game.creeps) {
             const creep = Game.creeps[idx];
             if (creep.memory.role == 'harvester') {
-                this.harvesterDo(creep);
+                did = this.harvesterDo(creep);
+                continue;
+                // console.log(`${creep.name} do ${did}`);
             }
             if (creep.memory.role == 'supporter') {
                 this.supporterDo(creep);
@@ -43,7 +45,8 @@ module.exports = {
                 continue;
             }
             if (creep.memory.role == 'xiangzi') {
-                this.xiangziDo(creep);
+                did = this.xiangziDo(creep);
+                console.log(`${creep.name} do ${did}`);
                 continue;
             }
             if (creep.memory.role == 'attacker') {
@@ -56,18 +59,22 @@ module.exports = {
         console.log('Worker DO ');
     },
     harvesterDo: function (creep) {
+        if(this.pickupByChance(creep)){
+            console.log('pickupByChance'+creep.name);
+            return 'pickupByChance';
+        }
         if (this.goHarvest(creep)) {
             // console.log('gggg');
-            return true;
+            return 'goHarvest';
         }
         // if (this.goStore(creep)) {
         //     return true;
         // }
         if (this.goStoreContainers(creep)) {
-            return true;
+            return 'goStoreContainers';
         }
         if (this.goUpgrade(creep)) {
-            return true;
+            return  'goUpgrade';
         }
 
         this.iAmLazyDog(creep);
@@ -149,25 +156,26 @@ module.exports = {
     },
     xiangziDo: function (creep) {
         if (this.goTakeResource(creep)) {
-            return true;
+            return 'goTakeResource';
         }
         if (this.goWithdrawFromStorage(creep)) {
-            return true;
+            return 'goWithdrawFromStorage';
+        
         }
         if (this.goRepairRanged(creep)) {
-            return true;
+            return 'goRepairRanged';
         }
         if (this.goFillLink(creep)) {
-            return true;
+            return 'goFillLink';
         }
         if (this.goBuild(creep, 3)) {
-            console.log('debug');
-            return true;
+            console.log('xiangzi go build');
+            return 'goBuild';
         }
         if(this.goStoreExtensions(creep)){
-            return true;
+            return 'goStoreExtensions';
         }
-        this.iAmLazyDog(creep);
+        // this.iAmLazyDog(creep);
         return false;
 
     },
@@ -430,6 +438,19 @@ module.exports = {
         }
         return false;
     },
+    // 如果当前所在的pos有resource在地上，就顺便pickup
+    pickupByChance: function (creep) {
+        var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 0);
+        if (droppedResources.length > 0) {
+            if (creep.pickup(droppedResources[0]) != OK) {
+                creep.say('NO PICKUP !');
+                return false;
+            }
+            creep.say('Picked up!');
+            return true;
+        }
+        return false;
+    },
     goTakeResource: function (creep) {
         if (creep.store[RESOURCE_ENERGY] > creep.store.getCapacity() / 4) {
             return false;
@@ -437,7 +458,7 @@ module.exports = {
         // var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES,10, {
         //     filter: (resource) => resource.resourceType == RESOURCE_ENERGY
         // });
-        var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 10);
+        var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 50);
 
         if (droppedResources.length > 0) {
             if (creep.pickup(droppedResources[0]) == ERR_NOT_IN_RANGE) {
