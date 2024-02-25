@@ -59,7 +59,7 @@ module.exports = {
             return true;
         }
         if (xiangzis.length < constant.XIANGZI_MAX_NUM) {
-            this.createGeneralCarryer('xiangzi');
+            this.createLittleWorker('xiangzi');
             return true;
         }
         if (supporters.length < constant.SUPPORTER_MAX_NUM) {
@@ -77,6 +77,14 @@ module.exports = {
             return true;
         }
 
+    },
+    createLittleWorker: function (roleName) {
+        Game.spawns[constant.SPAWN_HOME].spawnCreep([
+            WORK, CARRY, MOVE,
+            WORK, CARRY, MOVE
+        ]
+            , roleName + Game.time
+            , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
     },
     createStandWorker: function (roleName) {
         Game.spawns[constant.SPAWN_HOME].spawnCreep([

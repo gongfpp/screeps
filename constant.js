@@ -30,7 +30,7 @@ module.exports = {
     WORKER_MAX_NUM: null,
     HAVERSTER_MAX_NUM: 2,
     SUPPORTER_MAX_NUM: 1,
-    UPGRADER_MAX_NUM: 5,
+    UPGRADER_MAX_NUM: 1,
     REPAIRER_MAX_NUM: 1,
     BUILDER_MAX_NUM: 1,
     XIANGZI_MAX_NUM: 1,

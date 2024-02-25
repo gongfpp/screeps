@@ -31,7 +31,7 @@ module.exports = {
             }
             else if (creep.memory.role == 'xiangzi') {
                 did = this.xiangziDo(creep);
-                console.log(`${creep.name} do ${did}`);
+                // console.log(`${creep.name} do ${did}`);
             }
             else if (creep.memory.role == 'attacker') {
                 this.attackerDo(creep);
@@ -73,15 +73,12 @@ module.exports = {
         if (this.goStoreExtensions(creep, 20)) {
             return 'goStoreExtensions';
         }
-        // if (this.goBuild(creep, 5)) {
-        //     return 'goBuild';
-        // }
         if (this.goRepair(creep)) {
             return 'goRepair';
         }
-        if (this.goGenerateSafeMode(creep)) {
-            return 'goGenerateSafeMode';
-        }
+        // if (this.goGenerateSafeMode(creep)) {
+        //     return 'goGenerateSafeMode';
+        // }
         if (this.goUpgrade(creep)) {
             return 'goUpgrade';
         }
@@ -90,11 +87,13 @@ module.exports = {
         return false;
     },
     upgraderDo: function (creep) {
-
+        if (this.pickupByChance(creep)) {
+            return 'pickupByChance';
+        }
         if (this.goWithdrawEnergy(creep)) {
             return 'goWithdrawEnergy';
         }
-        if (this.goStoreExtensions(creep, 2)) {
+        if (this.goStoreExtensions(creep, 1)) {
             return 'goStoreExtensions';
         }
         if (this.goUpgrade(creep)) {
@@ -111,11 +110,7 @@ module.exports = {
         if (this.goBuild(creep)) {
             return true;
         }
-        if (this.goUpgrade(creep)) {
-            return true;
-        }
-        this.iAmLazyDog(creep);
-        return false;
+        return this.supporterDo(creep);
     },
     attackerDo: function (creep) {
         const targets = creep.room.find(FIND_HOSTILE_CREEPS);
@@ -129,14 +124,14 @@ module.exports = {
         }
 
         //attack tower if exist
-        this.goFlagRally(creep, 'attackPos');
+        this.goFlagRally(creep, 'attack');
 
         //patrol if no target to fight
 
         return false;
     },
     xiangziDo: function (creep) {
-        if (this.goTakeResource(creep, 20)) {
+        if (this.goTakeResource(creep, 2)) {
             return 'goTakeResource';
         }
         if (this.goWithdrawFromStorage(creep)) {
@@ -150,14 +145,14 @@ module.exports = {
             return 'goStoreExtensions';
         }
 
-        if (this.goBuild(creep, 5)) {
+        if (this.goBuild(creep, 4)) {
             return 'goBuild';
         }
-        if (this.goRepairRanged(creep, 6)) {
+        if (this.goRepairRanged(creep, 3)) {
             return 'goRepairRanged';
         }
 
-        if (this.goFlagRally(creep, 'xiangziRally')) {
+        if (this.goFlagRally(creep, 'xiangzi')) {
             return 'goFlagRally';
         }
         // this.iAmLazyDog(creep);
@@ -344,7 +339,7 @@ module.exports = {
                 || s.structureType == STRUCTURE_TOWER
                 || s.structureType == STRUCTURE_STORAGE
                 // || s.structureType == STRUCTURE_WALL
-            ) && s.hits < s.hitsMax
+            ) && s.hits < s.hitsMax / 2
         });
         if (!target) {
             return false;
@@ -378,7 +373,7 @@ module.exports = {
                 || s.structureType == STRUCTURE_STORAGE
                 || s.structureType == STRUCTURE_TOWER
                 // || s.structureType == STRUCTURE_WALL
-            ) && s.hits < s.hitsMax
+            ) && s.hits < s.hitsMax 
         })
 
         const target = creep.pos.findClosestByPath(targets);
@@ -446,8 +441,11 @@ module.exports = {
     },
     // 如果当前所在的pos有resource在地上，就顺便pickup
     pickupByChance: function (creep) {
+        if (creep.store.getFreeCapacity() < 20){
+            return false;
+        }
         var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 1);
-        if (droppedResources.length > 0 && creep.store.getFreeCapacity() > 20) {
+        if (droppedResources.length > 0 && creep.store.getFreeCapacity() > 0) {
             if (creep.pickup(droppedResources[0]) == ERR_NOT_IN_RANGE) {
                 // creep.say('NO PICKUP !');
                 creep.moveTo(droppedResources[0]);
@@ -455,6 +453,14 @@ module.exports = {
             }
             creep.say('Picked');
             // console.log('Picked up DROPPED_RESOURCES by chance :' + creep.name);
+            return true;
+        }
+        const tombstones = creep.pos.findInRange(FIND_TOMBSTONES, 1, { filter: (t) => t.store[RESOURCE_ENERGY] > 0 });
+        if (tombstones.length > 0) {
+            if (creep.withdraw(tombstones[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(tombstones[0], { visualizePathStyle: { stroke: '#ff0000' } });
+            }
+            creep.say('tombstone!');
             return true;
         }
         return false;
@@ -496,7 +502,6 @@ module.exports = {
         if (creep.room.controller.safeModeAvailable > constant.SAFE_MODE_COUNT) {
             return false;
         }
-
         if (creep.generateSafeMode(creep.room.controller) == ERR_NOT_IN_RANGE) {
             creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
         }
