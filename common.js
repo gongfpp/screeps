@@ -7,6 +7,7 @@
  * mod.thing == 'a thing'; // true
  */
 var constant = require('constant');
+const { WORKER_MAX_NUM } = require('./constant');
 
 module.exports = {
 
@@ -22,7 +23,7 @@ module.exports = {
         }
 
 
-        if(constant.IsUnderAttack > 30){
+        if (constant.IsUnderAttack > 30) {
             this.createAttacker('attacker');
         }
 
@@ -78,47 +79,53 @@ module.exports = {
         }
 
     },
+    //做支撑性工作，不需要大量移动与工作量的单位，如xiangzi
     createLittleWorker: function (roleName) {
         Game.spawns[constant.SPAWN_HOME].spawnCreep([
             WORK, CARRY, MOVE,
             WORK, CARRY, MOVE
+            //sum = 400
         ]
             , roleName + Game.time
             , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
     },
+    //在工作地点不需要或较少移动的工作单位，如upgrader
     createStandWorker: function (roleName) {
         Game.spawns[constant.SPAWN_HOME].spawnCreep([
             WORK, WORK, CARRY, MOVE,
             WORK, WORK, CARRY, MOVE,
             WORK, WORK, CARRY, MOVE,
             WORK, WORK, CARRY, MOVE
+            //cost :1200
         ]
             , roleName + Game.time
             , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
     },
+    //主要用于搬运或需要移动的单位，如 builder、supporter
     createGeneralCarryer: function (roleName) {
         Game.spawns[constant.SPAWN_HOME].spawnCreep([
-            WORK, CARRY, MOVE, MOVE,
-            WORK, CARRY, MOVE, MOVE,
-            WORK, CARRY, MOVE, MOVE,
-            WORK, CARRY, MOVE, MOVE
+            WORK, CARRY, MOVE,
+            WORK, CARRY, MOVE,
+            WORK, CARRY, MOVE,
+            WORK, CARRY, MOVE
+            //cost : 800
         ]
             , roleName + Game.time
             , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
     },
+    // 通用单位
     createGeneralWorker: function (roleName) {
         Game.spawns[constant.SPAWN_HOME].spawnCreep([
-            WORK, WORK, WORK,
-            WORK, WORK, WORK,
-            CARRY, CARRY, CARRY,
-            MOVE, MOVE, MOVE,
-            MOVE, MOVE, MOVE,
-            MOVE, MOVE, MOVE
+            WORK, WORK, WORK, WORK, WORK,
+            CARRY, CARRY, CARRY, CARRY, CARRY,
+            MOVE, MOVE, MOVE, MOVE, MOVE
+            //cost 1000
         ]
             , roleName + Game.time
             , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
     },
     createAttacker: function () {
+        //cost 420
         Game.spawns['Spawn1'].spawnCreep([
             TOUGH, ATTACK, MOVE,
             TOUGH, ATTACK, MOVE,
@@ -151,11 +158,11 @@ module.exports = {
             }
         }
         let ret = Game.spawns[constant.SPAWN_HOME].spawnCreep([
-            WORK, WORK, WORK,
-            WORK, WORK, WORK,
-            CARRY, CARRY, CARRY,
-            MOVE, MOVE, MOVE,
-            MOVE, MOVE, MOVE
+            WORK, WORK, WORK, WORK, WORK, WORK,
+            CARRY, CARRY, CARRY, CARRY, CARRY,
+            MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
+            //cost 12O0
+
         ]
             , 'harvester' + Game.time
             , {
@@ -200,6 +207,14 @@ module.exports = {
                 return acc;
             }, {});
             const creepInfo = `Creep 数量: ${creeps.length}, 各类型 Creep 数量: ${JSON.stringify(creepTypesCount)}`;
+            //各类型creep bodypart消耗能量数量
+            const creepBodyPartEnergy = creeps.reduce((acc, creep) => {
+                const bodyParts = creep.body;
+                bodyParts.forEach((part) => {
+                    acc[part.type] = (acc[part.type] || 0) + part.cost;
+                });
+                return acc;
+            }, {});
 
             // 防御信息
             const towers = room.find(FIND_MY_STRUCTURES, { filter: { structureType: STRUCTURE_TOWER } });

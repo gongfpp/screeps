@@ -104,11 +104,18 @@ module.exports = {
         return false;
     },
     builderDo: function (creep) {
+
+        if (this.pickupByChance(creep)) {
+            return 'pickupByChance';
+        }
         if (this.goWithdrawEnergy(creep)) {
-            return true;
+            return 'goWithdrawEnergy';
+        }
+        if (this.goFlagRally(creep, 'build')) {
+            return 'goFlagRally';
         }
         if (this.goBuild(creep)) {
-            return true;
+            return 'goBuild';
         }
         return this.supporterDo(creep);
     },
@@ -167,8 +174,9 @@ module.exports = {
         if (creep.pos.isEqualTo(flag.pos)) {
             return false;
         }
-        creep.moveTo(flag, { visualizePathStyle: { stroke: '#ffffff' } });
+        creep.moveTo(flag, { visualizePathStyle: { stroke: '#00ff00' } });
         creep.say('Go:' + flagName);
+        return true;
     },
     goFillLink: function (creep) {
         const sourceLink = Game.getObjectById(constant.SOURCE_LINK);
@@ -236,7 +244,7 @@ module.exports = {
     },
     goWithdrawEnergy: function (creep) {
         // 检查 Creep 的能量状态   TODO put it swap goHarvest();
-        if (creep.store[RESOURCE_ENERGY] == 0) {
+        if (creep.store[RESOURCE_ENERGY] < 8) {
             // 寻找最近的容器或存储
             const source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
@@ -266,7 +274,7 @@ module.exports = {
     goHarvest: function (creep) {
 
         //收集资源满了
-        if (creep.memory.isHarvesting && creep.store.getFreeCapacity() == 0) {
+        if (creep.memory.isHarvesting && creep.store.getFreeCapacity() < 8) {
             creep.memory.isHarvesting = false;
             creep.memory.finishedWork = true;
         } else if (!creep.memory.isHarvesting && creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0) {
@@ -373,7 +381,7 @@ module.exports = {
                 || s.structureType == STRUCTURE_STORAGE
                 || s.structureType == STRUCTURE_TOWER
                 // || s.structureType == STRUCTURE_WALL
-            ) && s.hits < s.hitsMax 
+            ) && s.hits < s.hitsMax
         })
 
         const target = creep.pos.findClosestByPath(targets);
@@ -441,7 +449,7 @@ module.exports = {
     },
     // 如果当前所在的pos有resource在地上，就顺便pickup
     pickupByChance: function (creep) {
-        if (creep.store.getFreeCapacity() < 20){
+        if (creep.store.getFreeCapacity() < 20) {
             return false;
         }
         var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 1);

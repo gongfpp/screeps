@@ -30,7 +30,7 @@ module.exports = {
     WORKER_MAX_NUM: null,
     HAVERSTER_MAX_NUM: 2,
     SUPPORTER_MAX_NUM: 1,
-    UPGRADER_MAX_NUM: 1,
+    UPGRADER_MAX_NUM: 3,
     REPAIRER_MAX_NUM: 1,
     BUILDER_MAX_NUM: 1,
     XIANGZI_MAX_NUM: 1,
@@ -51,7 +51,7 @@ module.exports = {
     //LINK
     SOURCE_LINK: '65d6221f8ef10e17e67a93ca',
     TARGET_LINK: '65d8d006ecef434ff888cb0f',
-    TARGET_LINK_2: '111',
+    TARGET_LINK_2: '65dc9beb4311aa2fc2699429',
     //STORAGE
     STORAGE_ID: '65d5ad955e8efe73adf434b1',
 
