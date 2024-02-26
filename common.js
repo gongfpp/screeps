@@ -160,19 +160,16 @@ module.exports = {
         }
         let ret = Game.spawns[constant.SPAWN_HOME].spawnCreep([
             WORK, WORK, WORK, WORK, WORK, WORK,
-            CARRY, CARRY, CARRY,
+            CARRY,
             MOVE, MOVE, MOVE
-            //cost 1050
+            //cost 800
 
         ]
-            , 'harvester' + Game.time
-            , {
+            , 'harvester' + Game.time, {
                 memory: {
-                    role: 'harvester',
-                    targetRoomId: constant.TARGET_ROOM_ID,
-                    targetSourceId: targetSourceId
+                    role: 'harvester', targetRoomId: constant.TARGET_ROOM_ID, targetSourceId: targetSourceId
                 }
-            });
+        });
 
         if (OK == ret) {
             console.log('[generateHarvest]:harvester source target:', targetSourceId);

@@ -32,7 +32,7 @@ module.exports = {
     SUPPORTER_MAX_NUM: 1,
     UPGRADER_MAX_NUM: 1,
     REPAIRER_MAX_NUM: 1,
-    BUILDER_MAX_NUM: 2,
+    BUILDER_MAX_NUM: 1,
     XIANGZI_MAX_NUM: 1,
     //RANGE :
     STORE_RANGE_MAX: 6,
@@ -55,7 +55,7 @@ module.exports = {
     //STORAGE
     STORAGE_ID: '65d5ad955e8efe73adf434b1',
 
-    SAFE_MODE_COUNT:2,
+    SAFE_MODE_COUNT: 2,
 
 
     IsUnderAttack: 0

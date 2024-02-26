@@ -236,8 +236,12 @@ module.exports = {
 
         const target = Game.getObjectById(creep.memory.targetSourceId);
 
-        if (!target) {
+        if (!target || target.energy == 0) {
             creep.say('NO⛏️！');
+
+            // 挖空了就先存一下 倒乾净口袋準備下一波
+            this.goStoreContainers(creep,1);
+
             return true;
         }
         if (creep.harvest(target) == ERR_NOT_IN_RANGE) {
