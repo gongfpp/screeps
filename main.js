@@ -12,9 +12,8 @@ function func() {
 
 module.exports.loop = function () {
     //TODO : 
-    // source harvester dynamic balance
-    // 工作优先级
     // 战斗模组
+    // 存特殊礦
     // 
 
     func();

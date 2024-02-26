@@ -29,26 +29,31 @@ module.exports = {
         const targetLink = Game.getObjectById(constant.TARGET_LINK);
         const targetLink2 = Game.getObjectById(constant.TARGET_LINK_2);
 
-        if (!sourceLink
-            || sourceLink.store.getUsedCapacity(RESOURCE_ENERGY) == 0
+        // 检查sourceLink是否存在以及是否有足够的能量进行传输
+        if (!sourceLink 
+            || sourceLink.store.getUsedCapacity(RESOURCE_ENERGY) === 0 
             || sourceLink.store.getUsedCapacity(RESOURCE_ENERGY) < sourceLink.store.getFreeCapacity(RESOURCE_ENERGY)) {
             return false;
         }
 
+        // 检查两个目标Link是否存在并计算它们的能量差
+        let targetLinkEnergy = targetLink ? targetLink.store.getUsedCapacity(RESOURCE_ENERGY) : Infinity;
+        let targetLink2Energy = targetLink2 ? targetLink2.store.getUsedCapacity(RESOURCE_ENERGY) : Infinity;
 
-
-        if (targetLink
-            && targetLink.store.getUsedCapacity(RESOURCE_ENERGY) < targetLink.store.getFreeCapacity(RESOURCE_ENERGY)) {
-            sourceLink.transferEnergy(targetLink);
-            return true;
+        // 确定哪个Link的能量更少，并向其传输能量
+        if (targetLinkEnergy < targetLink2Energy) {
+            if (targetLink && targetLink.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+                sourceLink.transferEnergy(targetLink);
+                return true;
+            }
+        } else {
+            if (targetLink2 && targetLink2.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+                sourceLink.transferEnergy(targetLink2);
+                return true;
+            }
         }
 
-        if (targetLink2
-            && targetLink2.store.getUsedCapacity(RESOURCE_ENERGY) < targetLink2.store.getFreeCapacity(RESOURCE_ENERGY)) {
-            sourceLink.transferEnergy(targetLink2);
-            return true;
-        }
-
+        return false;
     },
     towerAttack: function (tower) {
         // console.log(tower.room.name);
@@ -56,9 +61,6 @@ module.exports = {
         if (hostiles.length > 0) {
             var username = hostiles[0].owner.username;
             console.log(`User ${username} spotted in room `);
-            // var towers = Game.rooms[roomName].find(
-            //     FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_TOWER}});
-            // towers.forEach(tower => tower.attack(hostiles[0]));
             tower.attack(hostiles[0]);
         }
     }

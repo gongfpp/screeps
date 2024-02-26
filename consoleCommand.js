@@ -9,24 +9,24 @@
 
 module.exports = {
     // create Attacker 
-    Game.spawns['Spawn1'].spawnCreep([TOUGH, TOUGH, TOUGH, TOUGH, ATTACK, ATTACK, MOVE, MOVE], 'attacker' + Game.time, { memory: { role: 'attacker', targetRoomId: 'E54N51' } }),
-    // create Worker 
-    Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE]
-        , 'worker' + Game.time
-        , { memory: { role: 'worker', targetRoomId: 'E54N51' } }),
+    // Game.spawns['Spawn1'].spawnCreep([TOUGH, TOUGH, TOUGH, TOUGH, ATTACK, ATTACK, MOVE, MOVE], 'attacker' + Game.time, { memory: { role: 'attacker', targetRoomId: 'E54N51' } }),
+    // // create Worker 
+    // Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE]
+    //     , 'worker' + Game.time
+    //     , { memory: { role: 'worker', targetRoomId: 'E54N51' } }),
 
-    //supporter   
-    Game.spawns['Spawn1'].spawnCreep([WORK, WORK, CARRY, CARRY, MOVE, WORK, CARRY, MOVE, MOVE, MOVE]
-        , 'supporter' + Game.time
-        , { memory: { role: 'supporter', targetRoomId: 'E54N51' } }),
+    // //supporter   
+    // Game.spawns['Spawn1'].spawnCreep([WORK, WORK, CARRY, CARRY, MOVE, WORK, CARRY, MOVE, MOVE, MOVE]
+    //     , 'supporter' + Game.time
+    //     , { memory: { role: 'supporter', targetRoomId: 'E54N51' } }),
 
-    let harvestersPerSource = {};
-    let sources = Game.spawns['Spawn1'].room.find(FIND_SOURCES);
-    for(let s of sources) {
-        harvestersPerSource[s.id] = _.filter(Game.creeps, (c) => {
-            c.memory.targetSourceId == s.id
-        }).length;
-    }
-        console.log(JSON.stringify(sources));
-    console.log(JSON.stringify(harvestersPerSource));
+    // let harvestersPerSource = {};
+    // let sources = Game.spawns['Spawn1'].room.find(FIND_SOURCES);
+    // for(let s of sources) {
+    //     harvestersPerSource[s.id] = _.filter(Game.creeps, (c) => {
+    //         return c.memory.targetSourceId == s.id
+    //     }).length;
+    // }
+    //     console.log(JSON.stringify(sources));
+    // console.log(JSON.stringify(harvestersPerSource));
 };

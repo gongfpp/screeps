@@ -119,27 +119,12 @@ module.exports = {
         }
         return this.supporterDo(creep);
     },
-    attackerDo: function (creep) {
-        const targets = creep.room.find(FIND_HOSTILE_CREEPS);
-        if (targets.length) {
-            if (creep.attack(targets[0]) == ERR_NOT_IN_RANGE || creep.rangedAttack(targets[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(targets[0], { visualizePathStyle: { stroke: '#ff0000' } });
-                creep.say('⚔️' + 'KILL!');
-            }
-
-            return true;
-        }
-
-        //attack tower if exist
-        this.goFlagRally(creep, 'attack');
-
-        //patrol if no target to fight
-
-        return false;
-    },
     xiangziDo: function (creep) {
         if (this.goTakeResource(creep, 2)) {
             return 'goTakeResource';
+        }
+        if (this.goWithdrawFromContainer(creep)) {
+            return 'goWithdrawFromContainer';
         }
         if (this.goWithdrawFromStorage(creep)) {
             return 'goWithdrawFromStorage';
@@ -166,6 +151,24 @@ module.exports = {
         return false;
 
     },
+    attackerDo: function (creep) {
+        const targets = creep.room.find(FIND_HOSTILE_CREEPS);
+        if (targets.length) {
+            if (creep.attack(targets[0]) == ERR_NOT_IN_RANGE || creep.rangedAttack(targets[0]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(targets[0], { visualizePathStyle: { stroke: '#ff0000' } });
+                creep.say('⚔️' + 'KILL!');
+            }
+
+            return true;
+        }
+
+        //attack tower if exist
+        this.goFlagRally(creep, 'attack');
+
+        //patrol if no target to fight
+
+        return false;
+    },
     goFlagRally: function (creep, flagName) {
         const flag = Game.flags[flagName];
         if (!flag) {
@@ -186,7 +189,7 @@ module.exports = {
 
         if (creep.transfer(sourceLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             creep.moveTo(sourceLink, { visualizePathStyle: { stroke: '#d174a8' } });
-            creep.say('	🪕' + 'Link!');
+            creep.say('Link!');
             return true;
         }
 
@@ -194,83 +197,27 @@ module.exports = {
         return true;
         // return 'transfer failed :'+creep.transfer(sourceLink, RESOURCE_ENERGY);
     },
-    goWithdrawFromTargetLink: function (creep) {
-        // 检查 Creep 的能量状态   TODO put it swap goHarvest();
-        if (creep.store[RESOURCE_ENERGY] == 0) {
-            const source = Game.getObjectById(constant.TARGET_LINK);
-            if (source && source.store[RESOURCE_ENERGY] > 0) {
-                // 从容器或存储中提取能量
-                if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source, { visualizePathStyle: { stroke: '#ff5100' } });
-                    creep.say('Get E');
+    // goWithdrawFromTargetLink: function (creep) {
+    //     // 检查 Creep 的能量状态   TODO put it swap goHarvest();
+    //     if (creep.store[RESOURCE_ENERGY] == 0) {
+    //         const source = Game.getObjectById(constant.TARGET_LINK);
+    //         if (source && source.store[RESOURCE_ENERGY] > 0) {
+    //             // 从容器或存储中提取能量
+    //             if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+    //                 creep.moveTo(source, { visualizePathStyle: { stroke: '#ff5100' } });
+    //                 creep.say('Get E');
 
-                }
-                return true;
-            }
-            creep.say('No E');
+    //             }
+    //             return true;
+    //         }
+    //         creep.say('No E');
 
-            return true;
-        }
+    //         return true;
+    //     }
 
-        //有能量，不需要去提取能量
-        return false;
-    },
-    goWithdrawFromStorage: function (creep) {
-        // 检查 Creep 的能量状态   TODO put it swap goHarvest();
-        if (creep.store[RESOURCE_ENERGY] == 0) {
-            const source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => {
-                    return (
-                        structure.structureType == STRUCTURE_STORAGE
-                        && structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getFreeCapacity(RESOURCE_ENERGY));
-                }
-            });
-            if (source) {
-                // 从容器或存储中提取能量
-                if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source, { visualizePathStyle: { stroke: '#ff5100' } });
-                    creep.say('Get E');
-
-                }
-                return true;
-            }
-            creep.say('No E');
-
-            return true;
-        }
-
-        //有能量，不需要去提取能量
-        return false;
-    },
-    goWithdrawEnergy: function (creep) {
-        // 检查 Creep 的能量状态   TODO put it swap goHarvest();
-        if (creep.store[RESOURCE_ENERGY] < 8) {
-            // 寻找最近的容器或存储
-            const source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => {
-                    return (structure.structureType == STRUCTURE_CONTAINER
-                        || structure.structureType == STRUCTURE_STORAGE
-                        || structure.structureType == STRUCTURE_LINK) &&
-                        structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getFreeCapacity(RESOURCE_ENERGY);
-                }
-            });
-            if (source) {
-                // 从容器或存储中提取能量
-                if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source, { visualizePathStyle: { stroke: '#ff5100' } });
-                    creep.say('Get E');
-
-                }
-                return true;
-            }
-            creep.say('No E');
-
-            return true;
-        }
-
-        //有能量，不需要去提取能量
-        return false;
-    },
+    //     //有能量，不需要去提取能量
+    //     return false;
+    // },
     goHarvest: function (creep) {
 
         //收集资源满了
@@ -286,11 +233,8 @@ module.exports = {
             // creep.memory.finishedWork = false;
             return false;
         }
-        const target = creep.pos.findClosestByPath(FIND_SOURCES, {
-            filter: (s) => {
-                return s.energy > 0;
-            }
-        });
+
+        const target = Game.getObjectById(creep.memory.targetSourceId);
 
         if (!target) {
             creep.say('NO⛏️！');
@@ -306,6 +250,84 @@ module.exports = {
 
         return true;
     },
+    goWithdrawFromContainer: function (creep) {
+        if (creep.store[RESOURCE_ENERGY] > 8) {
+            //有能量，不需要去提取能量
+            return false;
+        }
+        const sources = creep.pos.findInRange(FIND_STRUCTURES, 2, {
+            filter: (structure) => {
+                return (
+                    structure.structureType == STRUCTURE_CONTAINER
+                    && structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getFreeCapacity(RESOURCE_ENERGY)) * 0.8;
+            }
+        });
+        if (sources.length < 1) {
+            return false;
+        }
+
+        // 从容器或存储中提取能量
+        if (creep.withdraw(sources[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(sources[0], { visualizePathStyle: { stroke: '#ff5100' } });
+            creep.say('Get E');
+        }
+        return true;
+    },
+    goWithdrawFromStorage: function (creep) {
+        if (creep.store[RESOURCE_ENERGY] > 8) {
+            //有能量，不需要去提取能量
+            return false;
+        }
+        const source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return (
+                    structure.structureType == STRUCTURE_STORAGE
+                    && structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getFreeCapacity(RESOURCE_ENERGY)) * 0.8;
+            }
+        });
+        if (source) {
+            // 从容器或存储中提取能量
+            if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(source, { visualizePathStyle: { stroke: '#ff5100' } });
+                creep.say('Get E');
+
+            }
+            return true;
+        }
+        creep.say('No E');
+
+        return true;
+    },
+    goWithdrawEnergy: function (creep) {
+        // 检查 Creep 的能量状态   TODO put it swap goHarvest();
+        if (creep.store[RESOURCE_ENERGY] < 8) {
+            // 寻找最近的容器或存储
+            const source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return (structure.structureType == STRUCTURE_CONTAINER
+                        || structure.structureType == STRUCTURE_STORAGE
+                        || structure.structureType == STRUCTURE_LINK) &&
+                        structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getFreeCapacity(RESOURCE_ENERGY) * 0.8;
+                }
+            });
+            if (source) {
+                // 从容器或存储中提取能量
+                if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(source, { visualizePathStyle: { stroke: '#ff5100' } });
+                    creep.say('Get E');
+
+                }
+                return true;
+            }
+            creep.say('No E');
+
+            return true;
+        }
+
+        //有能量，不需要去提取能量
+        return false;
+    },
+
     goBuild: function (creep, range) {
         if (typeof range === 'undefined') {
             // 如果没有提供 range 参数，执行不带 range 的逻辑

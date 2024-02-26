@@ -47,13 +47,15 @@ module.exports = {
             return true;
         }
 
+        //creeps by type
         const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
         const supporters = _.filter(Game.creeps, (creep) => creep.memory.role == 'supporter');
         const upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
         const builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
         const repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
         const xiangzis = _.filter(Game.creeps, (creep) => creep.memory.role == 'xiangzi');
-        // const 
+        const constructionSites = Game.rooms[constant.TARGET_ROOM_ID].find(FIND_MY_CONSTRUCTION_SITES);
+
 
         if (harvesters.length < constant.HAVERSTER_MAX_NUM) {
             this.createHarvesterCreep();
@@ -73,7 +75,7 @@ module.exports = {
             return true;
         }
 
-        if (builders.length < constant.BUILDER_MAX_NUM) {
+        if (constructionSites.length > 0 && builders.length < constant.BUILDER_MAX_NUM) {
             this.createGeneralCarryer('builder');
             return true;
         }
@@ -138,30 +140,29 @@ module.exports = {
                 }
             });
     },
+    //礦工
     createHarvesterCreep: function () {
         let harvestersPerSource = {};
         let sources = Game.spawns[constant.SPAWN_HOME].room.find(FIND_SOURCES);
         for (let s of sources) {
             harvestersPerSource[s.id] = _.filter(Game.creeps, (c) => {
-                c.memory.targetSourceId == s.id
+                return c.memory.targetSourceId == s.id
             }).length;
         }
-        console.log(JSON.stringify(sources));
-        console.log(JSON.stringify(harvestersPerSource));
         let targetSourceId = sources[0].id;
-        let minSourceWorkerNum = Infinity;
+        let targetSourceWorkerNum = Infinity;
 
         for (let sourceId in harvestersPerSource) {
-            if (harvestersPerSource[sourceId] < minSourceWorkerNum) {
-                minSourceWorkerNum = harvestersPerSource[sourceId];
+            if (harvestersPerSource[sourceId] < targetSourceWorkerNum) {
+                targetSourceWorkerNum = harvestersPerSource[sourceId];
                 targetSourceId = sourceId;
             }
         }
         let ret = Game.spawns[constant.SPAWN_HOME].spawnCreep([
             WORK, WORK, WORK, WORK, WORK, WORK,
-            CARRY, CARRY, CARRY, CARRY, CARRY,
-            MOVE, MOVE, MOVE, MOVE, MOVE, MOVE
-            //cost 12O0
+            CARRY, CARRY, CARRY,
+            MOVE, MOVE, MOVE
+            //cost 1050
 
         ]
             , 'harvester' + Game.time
