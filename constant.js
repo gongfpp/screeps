@@ -33,8 +33,8 @@ module.exports = {
     //creep num : 
     WORKER_MAX_NUM: null,
     HAVERSTER_MAX_NUM: 2,
-    SUPPORTER_MAX_NUM: 1,
-    UPGRADER_MAX_NUM: 1,
+    SUPPORTER_MAX_NUM: 2,
+    UPGRADER_MAX_NUM: 0,
     REPAIRER_MAX_NUM: 1,
     BUILDER_MAX_NUM: 1,
     XIANGZI_MAX_NUM: 1,

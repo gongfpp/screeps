@@ -9,39 +9,6 @@
 var constant = require('constant');
 
 module.exports = {
-    commonCheck: function () {
-
-        //Fight If Enemy Come
-        if (Game.spawns[constant.SPAWN_HOME].room.find(FIND_HOSTILE_CREEPS).length > 0) {
-            constant.IsUnderAttack++;
-            console.log(`[commonCheck create attacker] constant.IsUnderAttack: ${constant.IsUnderAttack}`);
-        } else {
-            constant.IsUnderAttack = 0;
-        }
-
-
-        if (constant.IsUnderAttack > 30 && !Game.rooms[constant.TARGET_ROOM_ID].controller.safeMode) {
-            constant.IS_HOME_PEACE = false;
-
-            const defenders = _.filter(Game.creeps, (creep) => creep.memory.role == 'defender');
-            if (defenders.length < constant.DEFENDER_MAX_NUM) {
-                this.createBattler('defender');
-
-            }
-        }
-
-        //Activate Safe Mode if Cant Win
-        if (Game.spawns[constant.SPAWN_HOME].hits < Game.spawns[constant.SPAWN_HOME].hitsMax / 2
-            || constant.IsUnderAttack > 500
-            || Game.spawns[constant.SPAWN_HOME].room.find(FIND_MY_CREEPS).length < 2
-            || Game.spawns[constant.SPAWN_HOME].room.controller.hits < Game.spawns[constant.SPAWN_HOME].room.controller.hitsMax / 2) {
-            Game.spawns[constant.SPAWN_HOME].room.controller.activateSafeMode();
-            constant.IS_HOME_PEACE = false;
-            console.log(`[SafeMode Activated] TICK:${Game.time}`);
-        }
-
-
-    },
     generateCreeps: function () {
         //用于灾后重建的harvester
         if (!constant.IS_HOME_PEACE && _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester').length < 4) {
@@ -133,39 +100,12 @@ module.exports = {
             , roleName + Game.time
             , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
     },
-    createBattler: function (roleName) {
-        //cost 420
-        Game.spawns['Spawn1'].spawnCreep([
-            TOUGH, ATTACK, MOVE,
-            TOUGH, ATTACK, MOVE,
-            TOUGH, ATTACK, MOVE
-        ]
-            , roleName + Game.time
-            , {
-                memory: {
-                    role: roleName
-                }
-            });
-    },
-    createAttacker: function () {
-        //cost 420
-        Game.spawns['Spawn1'].spawnCreep([
-            TOUGH, ATTACK, MOVE,
-            TOUGH, ATTACK, MOVE,
-            TOUGH, ATTACK, MOVE
-        ]
-            , 'attacker' + Game.time
-            , {
-                memory: {
-                    role: 'attacker'
-                }
-            });
-    },
+    
     createHarvesterCreep: function (bodyParts) {
         if (!bodyParts) {
             bodyParts = [
                 WORK, WORK, WORK, WORK, WORK, WORK,
-                CARRY,
+                CARRY, CARRY, CARRY, 
                 MOVE, MOVE, MOVE
                 //cost 800
             ];

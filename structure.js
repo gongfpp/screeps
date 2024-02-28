@@ -8,12 +8,13 @@
  */
 var constant = require('constant');
 module.exports = {
+    isTowerAttack: false,
     structuresDo: function () {
         this.linkDo();
 
         // 找到所有的tower
         towers = _.filter(Game.structures, (s) => s.structureType == STRUCTURE_TOWER);
-        towers.forEach(tower => {this.towerAttack(tower)});
+        towers.forEach(tower => { this.towerAttack(tower) });
 
         // //individual structures
         // for (let idx in Game.structures) {
@@ -30,8 +31,8 @@ module.exports = {
         const targetLink2 = Game.getObjectById(constant.TARGET_LINK_2);
 
         // 检查sourceLink是否存在以及是否有足够的能量进行传输
-        if (!sourceLink 
-            || sourceLink.store.getUsedCapacity(RESOURCE_ENERGY) === 0 
+        if (!sourceLink
+            || sourceLink.store.getUsedCapacity(RESOURCE_ENERGY) === 0
             || sourceLink.store.getUsedCapacity(RESOURCE_ENERGY) < sourceLink.store.getFreeCapacity(RESOURCE_ENERGY)) {
             return false;
         }
@@ -42,12 +43,12 @@ module.exports = {
 
         // 确定哪个Link的能量更少，并向其传输能量
         if (targetLinkEnergy < targetLink2Energy) {
-            if (targetLink && targetLink.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+            if (targetLink && targetLink.store.getFreeCapacity(RESOURCE_ENERGY) > 99) {
                 sourceLink.transferEnergy(targetLink);
                 return true;
             }
         } else {
-            if (targetLink2 && targetLink2.store.getFreeCapacity(RESOURCE_ENERGY) > 0) {
+            if (targetLink2 && targetLink2.store.getFreeCapacity(RESOURCE_ENERGY) > 99) {
                 sourceLink.transferEnergy(targetLink2);
                 return true;
             }
@@ -56,8 +57,10 @@ module.exports = {
         return false;
     },
     towerAttack: function (tower) {
-        // console.log(tower.room.name);
-        let hostiles = tower.pos.findInRange(FIND_HOSTILE_CREEPS,35);
+        if (!this.isTowerAttack){
+            return false;
+        }
+        let hostiles = tower.pos.findInRange(FIND_HOSTILE_CREEPS, 16);
         const hostile = tower.pos.findClosestByRange(hostiles);
         if (hostile) {
             var username = hostile.owner.username;

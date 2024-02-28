@@ -16,9 +16,10 @@ module.exports.loop = function () {
     // 存特殊礦
     // 佔基地creep
     // 拿下隔壁
+    // 災后重建harvester改造
+    // 建築自動平衡優化
 
     func();
-    common.commonCheck();
     common.periodCheck();
     common.generateCreeps();
     common.clearDeadMemory();
