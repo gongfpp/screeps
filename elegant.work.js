@@ -35,7 +35,9 @@ module.exports = {
             }
             else if (creep.memory.role == 'attacker') {
                 this.attackerDo(creep);
-
+            }
+            else if (creep.memory.role == 'defender') {
+                this.attackerDo(creep);
             }
         }
     },
@@ -46,7 +48,9 @@ module.exports = {
         if (this.goHarvest(creep)) {
             return 'goHarvest';
         }
-
+        if (!constant.IS_HOME_PEACE && this.goStoreExtensions(creep, 3)) {
+            return 'goStoreExtensions';
+        }
         if (this.goStoreContainers(creep, 3)) {
             return 'goStoreContainers';
         }
@@ -76,9 +80,9 @@ module.exports = {
         if (this.goRepair(creep)) {
             return 'goRepair';
         }
-        // if (this.goGenerateSafeMode(creep)) {
-        //     return 'goGenerateSafeMode';
-        // }
+        if (this.goGenerateSafeMode(creep)) {
+            return 'goGenerateSafeMode';
+        }
         if (this.goUpgrade(creep)) {
             return 'goUpgrade';
         }
@@ -240,7 +244,7 @@ module.exports = {
             creep.say('NO⛏️！');
 
             // 挖空了就先存一下 倒乾净口袋準備下一波
-            this.goStoreContainers(creep,1);
+            this.goStoreContainers(creep, 1);
 
             return true;
         }
@@ -299,7 +303,7 @@ module.exports = {
             return true;
         }
         creep.say('No E');
-
+        this.harvesterDo(creep);
         return true;
     },
     goWithdrawEnergy: function (creep) {

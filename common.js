@@ -7,11 +7,8 @@
  * mod.thing == 'a thing'; // true
  */
 var constant = require('constant');
-const { WORKER_MAX_NUM } = require('./constant');
 
 module.exports = {
-
-    // nowSpawn : Game.spawns[this.SPAWN_HOME],
     commonCheck: function () {
 
         //Fight If Enemy Come
@@ -23,8 +20,14 @@ module.exports = {
         }
 
 
-        if (constant.IsUnderAttack > 30) {
-            this.createAttacker('attacker');
+        if (constant.IsUnderAttack > 30 && !Game.rooms[constant.TARGET_ROOM_ID].controller.safeMode) {
+            constant.IS_HOME_PEACE = false;
+
+            const defenders = _.filter(Game.creeps, (creep) => creep.memory.role == 'defender');
+            if (defenders.length < constant.DEFENDER_MAX_NUM) {
+                this.createBattler('defender');
+
+            }
         }
 
         //Activate Safe Mode if Cant Win
@@ -33,17 +36,16 @@ module.exports = {
             || Game.spawns[constant.SPAWN_HOME].room.find(FIND_MY_CREEPS).length < 2
             || Game.spawns[constant.SPAWN_HOME].room.controller.hits < Game.spawns[constant.SPAWN_HOME].room.controller.hitsMax / 2) {
             Game.spawns[constant.SPAWN_HOME].room.controller.activateSafeMode();
+            constant.IS_HOME_PEACE = false;
             console.log(`[SafeMode Activated] TICK:${Game.time}`);
         }
 
 
     },
     generateCreeps: function () {
-        //maybe the whole economy is destroyed , create base worker to rebuild
-        if (Game.spawns[constant.SPAWN_HOME].room.find(FIND_MY_CREEPS).length < 2) {
-            Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE]
-                , 'harvester' + Game.time
-                , { memory: { role: 'harvester', targetRoomId: 'E54N51' } });
+        //用于灾后重建的harvester
+        if (!constant.IS_HOME_PEACE && _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester').length < 4) {
+            this.createHarvesterCreep([WORK, WORK, CARRY, MOVE]);
             return true;
         }
 
@@ -58,10 +60,15 @@ module.exports = {
 
 
         if (harvesters.length < constant.HAVERSTER_MAX_NUM) {
-            this.createHarvesterCreep();
+            this.createHarvesterCreep([
+                WORK, WORK, WORK, WORK, WORK, WORK,
+                CARRY,
+                MOVE, MOVE, MOVE
+                //cost 800
+            ]);
             return true;
         }
-        if (xiangzis.length < constant.XIANGZI_MAX_NUM) {
+        if (xiangzis.length < constant.XIANGZI_MAX_NUM && constant.IS_HOME_PEACE) {
             this.createLittleWorker('xiangzi');
             return true;
         }
@@ -80,8 +87,10 @@ module.exports = {
             return true;
         }
 
+        if (constant.IsUnderAttack == 0) {
+            constant.IS_HOME_PEACE = true;
+        }
     },
-    //做支撑性工作，不需要大量移动与工作量的单位，如xiangzi
     createLittleWorker: function (roleName) {
         Game.spawns[constant.SPAWN_HOME].spawnCreep([
             WORK, CARRY, MOVE,
@@ -91,7 +100,6 @@ module.exports = {
             , roleName + Game.time
             , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
     },
-    //在工作地点不需要或较少移动的工作单位，如upgrader
     createStandWorker: function (roleName) {
         Game.spawns[constant.SPAWN_HOME].spawnCreep([
             WORK, WORK, CARRY, MOVE,
@@ -103,7 +111,6 @@ module.exports = {
             , roleName + Game.time
             , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
     },
-    //主要用于搬运或需要移动的单位，如 builder、supporter
     createGeneralCarryer: function (roleName) {
         Game.spawns[constant.SPAWN_HOME].spawnCreep([
             WORK, CARRY, MOVE,
@@ -126,6 +133,20 @@ module.exports = {
             , roleName + Game.time
             , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
     },
+    createBattler: function (roleName) {
+        //cost 420
+        Game.spawns['Spawn1'].spawnCreep([
+            TOUGH, ATTACK, MOVE,
+            TOUGH, ATTACK, MOVE,
+            TOUGH, ATTACK, MOVE
+        ]
+            , roleName + Game.time
+            , {
+                memory: {
+                    role: roleName
+                }
+            });
+    },
     createAttacker: function () {
         //cost 420
         Game.spawns['Spawn1'].spawnCreep([
@@ -140,8 +161,15 @@ module.exports = {
                 }
             });
     },
-    //礦工
-    createHarvesterCreep: function () {
+    createHarvesterCreep: function (bodyParts) {
+        if (!bodyParts) {
+            bodyParts = [
+                WORK, WORK, WORK, WORK, WORK, WORK,
+                CARRY,
+                MOVE, MOVE, MOVE
+                //cost 800
+            ];
+        }
         let harvestersPerSource = {};
         let sources = Game.spawns[constant.SPAWN_HOME].room.find(FIND_SOURCES);
         for (let s of sources) {
@@ -158,18 +186,9 @@ module.exports = {
                 targetSourceId = sourceId;
             }
         }
-        let ret = Game.spawns[constant.SPAWN_HOME].spawnCreep([
-            WORK, WORK, WORK, WORK, WORK, WORK,
-            CARRY,
-            MOVE, MOVE, MOVE
-            //cost 800
-
-        ]
-            , 'harvester' + Game.time, {
-                memory: {
-                    role: 'harvester', targetRoomId: constant.TARGET_ROOM_ID, targetSourceId: targetSourceId
-                }
-        });
+        let ret = Game.spawns[constant.SPAWN_HOME].spawnCreep(bodyParts
+            , 'harvester' + Game.time
+            , { memory: { role: 'harvester', targetRoomId: constant.TARGET_ROOM_ID, targetSourceId: targetSourceId } });
 
         if (OK == ret) {
             console.log('[generateHarvest]:harvester source target:', targetSourceId);
@@ -184,7 +203,6 @@ module.exports = {
         }
     },
     periodCheck: function () {
-        //TODO : source worker dynamic balance
         if (Game.time % constant.MID_PERIROD_TICKS == 0) {
             const room = Game.rooms[constant.TARGET_ROOM_ID];
             if (!room) {
@@ -231,6 +249,9 @@ module.exports = {
             //房间能量来源状态
             const sources = room.find(FIND_SOURCES);
             const sourceInfo = sources.map((source, index) => `能量源 ${index + 1}: 剩余能量 ${source.energy}/${source.energyCapacity}, 再生时间 ${source.ticksToRegeneration}`).join("; ");
+
+            //constant
+
 
 
             // 整合信息输出

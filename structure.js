@@ -57,11 +57,12 @@ module.exports = {
     },
     towerAttack: function (tower) {
         // console.log(tower.room.name);
-        let hostiles = tower.room.find(FIND_HOSTILE_CREEPS);
-        if (hostiles.length > 0) {
-            var username = hostiles[0].owner.username;
+        let hostiles = tower.pos.findInRange(FIND_HOSTILE_CREEPS,35);
+        const hostile = tower.pos.findClosestByRange(hostiles);
+        if (hostile) {
+            var username = hostile.owner.username;
             console.log(`User ${username} spotted in room `);
-            tower.attack(hostiles[0]);
+            tower.attack(hostile);
         }
     }
 };

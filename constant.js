@@ -26,6 +26,10 @@ module.exports = {
         [STRUCTURE_ROAD]: 6,
         [STRUCTURE_STORAGE]: 7,
     },
+
+
+    // DEFENDER
+    DEFENDER_MAX_NUM: 2,
     //creep num : 
     WORKER_MAX_NUM: null,
     HAVERSTER_MAX_NUM: 2,
@@ -58,6 +62,6 @@ module.exports = {
     SAFE_MODE_COUNT: 2,
 
 
-    IsUnderAttack: 0
-
+    IsUnderAttack: 0,
+    IS_HOME_PEACE:true
 };
