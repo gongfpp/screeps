@@ -11,15 +11,16 @@ var constant = require('constant');
 module.exports = {
     isFight: false,
     attackFlagName: 'A',
-    defenderFlagName:'D',
-    healerFlagName:'H',
-    tankFlagName:'T',
-    attackerNum : 5 , 
+    defenderFlagName: 'D',
+    healerFlagName: 'H',
+    tankFlagName: 'T',
+    attackerNum: 2,
     defenderNum: 2,
-    healerNum : 2,
-    tankNum:1,
+    healerNum: 2,
+    tankNum: 1,
+    autoActivateSafeMode: false,
 
-    battleDo:function() {
+    battleDo: function () {
 
         //Fight If Enemy Come
         if (Game.spawns[constant.SPAWN_HOME].room.find(FIND_HOSTILE_CREEPS).length > 0) {
@@ -41,20 +42,22 @@ module.exports = {
         }
 
         //Activate Safe Mode if Cant Win
-        if (Game.spawns[constant.SPAWN_HOME].hits < Game.spawns[constant.SPAWN_HOME].hitsMax / 2
-            || constant.IsUnderAttack > 500
+        if (this.autoActivateSafeMode && (
+            Game.spawns[constant.SPAWN_HOME].hits < Game.spawns[constant.SPAWN_HOME].hitsMax / 2
             || Game.spawns[constant.SPAWN_HOME].room.find(FIND_MY_CREEPS).length < 2
-            || Game.spawns[constant.SPAWN_HOME].room.controller.hits < Game.spawns[constant.SPAWN_HOME].room.controller.hitsMax / 2) {
+            || Game.spawns[constant.SPAWN_HOME].room.controller.hits < Game.spawns[constant.SPAWN_HOME].room.controller.hitsMax / 2
+        )) {
             Game.spawns[constant.SPAWN_HOME].room.controller.activateSafeMode();
             constant.IS_HOME_PEACE = false;
+            this.autoActivateSafeMode = false;
             console.log(`[SafeMode Activated] TICK:${Game.time}`);
         }
 
 
 
-        
+
     },
-    generateBattleCreeps:function(){
+    generateBattleCreeps: function () {
         if (!this.isFight) {
             return false;
         }

@@ -30,14 +30,13 @@ module.exports = {
         const targetLink = Game.getObjectById(constant.TARGET_LINK);
         const targetLink2 = Game.getObjectById(constant.TARGET_LINK_2);
 
-        // 检查sourceLink是否存在以及是否有足够的能量进行传输
         if (!sourceLink
             || sourceLink.store.getUsedCapacity(RESOURCE_ENERGY) === 0
             || sourceLink.store.getUsedCapacity(RESOURCE_ENERGY) < sourceLink.store.getFreeCapacity(RESOURCE_ENERGY)) {
             return false;
         }
 
-        // 检查两个目标Link是否存在并计算它们的能量差
+        
         let targetLinkEnergy = targetLink ? targetLink.store.getUsedCapacity(RESOURCE_ENERGY) : Infinity;
         let targetLink2Energy = targetLink2 ? targetLink2.store.getUsedCapacity(RESOURCE_ENERGY) : Infinity;
 

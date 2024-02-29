@@ -25,7 +25,6 @@ module.exports = {
         const xiangzis = _.filter(Game.creeps, (creep) => creep.memory.role == 'xiangzi');
         const constructionSites = Game.rooms[constant.TARGET_ROOM_ID].find(FIND_MY_CONSTRUCTION_SITES);
 
-
         if (harvesters.length < constant.HAVERSTER_MAX_NUM) {
             this.createHarvesterCreep([
                 WORK, WORK, WORK, WORK, WORK, WORK,

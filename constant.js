@@ -43,7 +43,7 @@ module.exports = {
     WORKER_PATH_LONGEST: 5,
     SUPPORTER_REPAIR_RANGE: 2,
     //ROOM:
-    TARGET_ROOM_ID: 'E54N51',
+    TARGET_ROOM_ID: 'W2N33',
     SPAWN_HOME: 'Spawn1',
     //SOUCE:
     SOURCE_ID_1: '5bbcb0409099fc012e63bcd1',
