@@ -11,6 +11,7 @@
 //find way then moveTo itself !  with dynamic balance between work places ,no need to handle moveTo()
 
 var constant = require('constant');
+const common = require('./common');
 
 module.exports = {
     creepsDo: function () {
@@ -38,8 +39,30 @@ module.exports = {
             }
             else if (creep.memory.role == 'defender') {
                 this.attackerDo(creep);
+            } else if (creep.memory.role == 'baseHarvester') {
+                this.baseHarvesterDo(creep);
             }
         }
+    },
+    baseHarvesterDo: function (creep) {
+        if (this.pickupByChance(creep)) {
+            return 'pickupByChance';
+        }
+        if (this.goHarvest(creep)) {
+            return 'goHarvest';
+        }
+        if (this.goStoreImportant(creep, 9)) {
+            return 'goStoreImportant';
+        }
+        if (this.goBuild(creep, 5)) {
+            return 'goBuild';
+        }
+        if (this.supporterDo(creep)) {
+            return 'supporterDo';
+        }
+
+        this.iAmLazyDog(creep);
+        return false;
     },
     harvesterDo: function (creep) {
         if (this.pickupByChance(creep)) {
@@ -84,7 +107,6 @@ module.exports = {
             return 'goUpgrade';
         }
 
-        this.iAmLazyDog(creep);
         return false;
     },
     upgraderDo: function (creep) {
@@ -233,7 +255,7 @@ module.exports = {
     goHarvest: function (creep) {
 
         //收集资源满了
-        if (creep.memory.isHarvesting && creep.store.getFreeCapacity() < 8) {
+        if (creep.memory.isHarvesting && creep.store.getFreeCapacity() < common.bodyPartCount(creep, WORK) * 2) {
             creep.memory.isHarvesting = false;
             creep.memory.finishedWork = true;
         } else if (!creep.memory.isHarvesting && creep.store.getUsedCapacity(RESOURCE_ENERGY) == 0) {
@@ -315,7 +337,6 @@ module.exports = {
         return true;
     },
     goWithdrawEnergy: function (creep) {
-        // 检查 Creep 的能量状态   TODO put it swap goHarvest();
         if (creep.store[RESOURCE_ENERGY] < 8) {
             // 寻找最近的容器或存储
             const source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -346,35 +367,23 @@ module.exports = {
 
     goBuild: function (creep, range) {
         if (typeof range === 'undefined') {
-            // 如果没有提供 range 参数，执行不带 range 的逻辑
-            const target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-            if (!target) {
-                return false;
-            }
-
-            this.dontBlockTheSource(creep, target);
-
-            if (creep.build(target) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target, { visualizePathStyle: { stroke: '#b88114' } });
-                creep.say('🛠️');
-            }
-            return true;
-        } else {
-            // 如果提供了 range 参数，执行带 range 的逻辑
-            const targets = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, range);
-            const target = creep.pos.findClosestByPath(targets);
-            if (!target) {
-                return false;
-            }
-
-            this.dontBlockTheSource(creep, target);
-
-            if (creep.build(target) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target, { visualizePathStyle: { stroke: '#b88114' } });
-                creep.say('🛠️');
-            }
-            return true;
+            range = 99;
         }
+
+        const targets = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, range);
+        const target = creep.pos.findClosestByPath(targets);
+        if (!target) {
+            return false;
+        }
+
+        this.dontBlockTheSource(creep, target);
+
+        if (creep.build(target) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(target, { visualizePathStyle: { stroke: '#b88114' } });
+            creep.say('🛠️');
+        }
+        return true;
+
     },
     goRepair: function (creep) {
 

@@ -9,138 +9,7 @@
 var constant = require('constant');
 
 module.exports = {
-    generateCreeps: function () {
-        //用于灾后重建的harvester
-        if (!constant.IS_HOME_PEACE && _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester').length < 4) {
-            this.createHarvesterCreep([WORK, WORK, CARRY, MOVE]);
-            return true;
-        }
-
-        //creeps by type
-        const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
-        const supporters = _.filter(Game.creeps, (creep) => creep.memory.role == 'supporter');
-        const upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-        const builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-        const repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
-        const xiangzis = _.filter(Game.creeps, (creep) => creep.memory.role == 'xiangzi');
-        const constructionSites = Game.rooms[constant.TARGET_ROOM_ID].find(FIND_MY_CONSTRUCTION_SITES);
-
-        if (harvesters.length < constant.HAVERSTER_MAX_NUM) {
-            this.createHarvesterCreep([
-                WORK, WORK, WORK, WORK, WORK, WORK,
-                CARRY,
-                MOVE, MOVE, MOVE
-                //cost 800
-            ]);
-            return true;
-        }
-        if (xiangzis.length < constant.XIANGZI_MAX_NUM && constant.IS_HOME_PEACE) {
-            this.createLittleWorker('xiangzi');
-            return true;
-        }
-        if (supporters.length < constant.SUPPORTER_MAX_NUM) {
-            this.createGeneralCarryer('supporter');
-            return true;
-        }
-
-        if (upgraders.length < constant.UPGRADER_MAX_NUM) {
-            this.createStandWorker('upgrader');
-            return true;
-        }
-
-        if (constructionSites.length > 0 && builders.length < constant.BUILDER_MAX_NUM) {
-            this.createGeneralCarryer('builder');
-            return true;
-        }
-
-        if (constant.IsUnderAttack == 0) {
-            constant.IS_HOME_PEACE = true;
-        }
-    },
-    createLittleWorker: function (roleName) {
-        Game.spawns[constant.SPAWN_HOME].spawnCreep([
-            WORK, CARRY, MOVE,
-            WORK, CARRY, MOVE
-            //sum = 400
-        ]
-            , roleName + Game.time
-            , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
-    },
-    createStandWorker: function (roleName) {
-        Game.spawns[constant.SPAWN_HOME].spawnCreep([
-            WORK, WORK, CARRY, MOVE,
-            WORK, WORK, CARRY, MOVE,
-            WORK, WORK, CARRY, MOVE,
-            WORK, WORK, CARRY, MOVE
-            //cost :1200
-        ]
-            , roleName + Game.time
-            , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
-    },
-    createGeneralCarryer: function (roleName) {
-        Game.spawns[constant.SPAWN_HOME].spawnCreep([
-            WORK, CARRY, MOVE,
-            WORK, CARRY, MOVE,
-            WORK, CARRY, MOVE,
-            WORK, CARRY, MOVE
-            //cost : 800
-        ]
-            , roleName + Game.time
-            , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
-    },
-    // 通用单位
-    createGeneralWorker: function (roleName) {
-        Game.spawns[constant.SPAWN_HOME].spawnCreep([
-            WORK, WORK, WORK, WORK, WORK,
-            CARRY, CARRY, CARRY, CARRY, CARRY,
-            MOVE, MOVE, MOVE, MOVE, MOVE
-            //cost 1000
-        ]
-            , roleName + Game.time
-            , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
-    },
     
-    createHarvesterCreep: function (bodyParts) {
-        if (!bodyParts) {
-            bodyParts = [
-                WORK, WORK, WORK, WORK, WORK, WORK,
-                CARRY, CARRY, CARRY, 
-                MOVE, MOVE, MOVE
-                //cost 800
-            ];
-        }
-        let harvestersPerSource = {};
-        let sources = Game.spawns[constant.SPAWN_HOME].room.find(FIND_SOURCES);
-        for (let s of sources) {
-            harvestersPerSource[s.id] = _.filter(Game.creeps, (c) => {
-                return c.memory.targetSourceId == s.id
-            }).length;
-        }
-        let targetSourceId = sources[0].id;
-        let targetSourceWorkerNum = Infinity;
-
-        for (let sourceId in harvestersPerSource) {
-            if (harvestersPerSource[sourceId] < targetSourceWorkerNum) {
-                targetSourceWorkerNum = harvestersPerSource[sourceId];
-                targetSourceId = sourceId;
-            }
-        }
-        let ret = Game.spawns[constant.SPAWN_HOME].spawnCreep(bodyParts
-            , 'harvester' + Game.time
-            , { memory: { role: 'harvester', targetRoomId: constant.TARGET_ROOM_ID, targetSourceId: targetSourceId } });
-
-        if (OK == ret) {
-            console.log('[generateHarvest]:harvester source target:', targetSourceId);
-        }
-    },
-    clearDeadMemory: function () {
-        for (var name in Memory.creeps) {
-            if (!Game.creeps[name]) {
-                delete Memory.creeps[name];
-                console.log('Clearing non-existing creep memory:', name);
-            }
-        }
-    },
     periodCheck: function () {
         if (Game.time % constant.MID_PERIROD_TICKS == 0) {
             const room = Game.rooms[constant.TARGET_ROOM_ID];
@@ -208,5 +77,31 @@ module.exports = {
         // if(Game.time%constant.LONG_PERIROD_TICKS == 0 ){
         //     console.log(`[Long Period Check] `);
         // }
+    },
+    bodyPartCount:function(creep,bodyPartType){
+        return creep.body.filter(part => part.type === bodyPartType).length;
+    },
+    countMiningPositions:function(source) {
+    // 获取Source周围的地形数据
+    let terrain = source.room.lookForAtArea(
+        LOOK_TERRAIN,
+        source.pos.y - 1,
+        source.pos.x - 1,
+        source.pos.y + 1,
+        source.pos.x + 1,
+        true
+    );
+
+    // 计算可以用来采矿的位置数量
+    let count = 0;
+    for (let tile of terrain) {
+        if (tile.terrain === 'plain' || tile.terrain === 'swamp') {
+            count++;
+        }
     }
+
+    // 减去source本身所占的位置
+    return count - 1;
+}
+
 };

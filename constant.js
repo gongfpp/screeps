@@ -46,18 +46,18 @@ module.exports = {
     TARGET_ROOM_ID: 'W2N33',
     SPAWN_HOME: 'Spawn1',
     //SOUCE:
-    SOURCE_ID_1: '5bbcb0409099fc012e63bcd1',
-    SOURCE_ID_2: '5bbcb0409099fc012e63bcd0',
+    SOURCE_ID_1: '',
+    SOURCE_ID_2: '',
     //LOOP:
     SHORT_PERIROD_TICKS: 10,
     MID_PERIROD_TICKS: 20,
     LONG_PERIROD_TICKS: 1500,
     //LINK
-    SOURCE_LINK: '65d6221f8ef10e17e67a93ca',
-    TARGET_LINK: '65d8d006ecef434ff888cb0f',
-    TARGET_LINK_2: '65dc9beb4311aa2fc2699429',
+    SOURCE_LINK: '',
+    TARGET_LINK: '',
+    TARGET_LINK_2: '',
     //STORAGE
-    STORAGE_ID: '65d5ad955e8efe73adf434b1',
+    STORAGE_ID: '',
 
     SAFE_MODE_COUNT: 2,
 
