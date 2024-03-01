@@ -11,7 +11,7 @@ var constant = require('constant');
 module.exports = {
     
     periodCheck: function () {
-        if (Game.time % constant.MID_PERIROD_TICKS == 0) {
+        if (Game.time % constant.SHORT_PERIROD_TICKS == 0) {
             const room = Game.rooms[constant.TARGET_ROOM_ID];
             if (!room) {
                 console.log("目标房间未找到");

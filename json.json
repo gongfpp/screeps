@@ -1,40 +1,50 @@
 [
   {
+    "id": "65e0c8369cf7c4914b5873e0",
     "room": {
-      "name": "E54N51",
-      "energyAvailable": 517,
-      "energyCapacityAvailable": 1650,
+      "name": "W2N33",
+      "energyAvailable": 500,
+      "energyCapacityAvailable": 500,
       "visual": {
-        "roomName": "E54N51"
+        "roomName": "W2N33"
       }
     },
     "pos": {
-      "x": 33,
-      "y": 38,
-      "roomName": "E54N51"
+      "x": 36,
+      "y": 32,
+      "roomName": "W2N33"
     },
-    "id": "5bbcb0409099fc012e63bcd0",
-    "energy": 0,
-    "energyCapacity": 3000,
-    "ticksToRegeneration": 21
+    "store": {
+      "energy": 600
+    },
+    "storeCapacity": 2000,
+    "ticksToDecay": 370,
+    "hits": 250000,
+    "hitsMax": 250000,
+    "structureType": "container"
   },
   {
+    "id": "65e0dea3decfd588a3da0a64",
     "room": {
-      "name": "E54N51",
-      "energyAvailable": 517,
-      "energyCapacityAvailable": 1650,
+      "name": "W2N33",
+      "energyAvailable": 500,
+      "energyCapacityAvailable": 500,
       "visual": {
-        "roomName": "E54N51"
+        "roomName": "W2N33"
       }
     },
     "pos": {
-      "x": 33,
-      "y": 40,
-      "roomName": "E54N51"
+      "x": 35,
+      "y": 32,
+      "roomName": "W2N33"
     },
-    "id": "5bbcb0409099fc012e63bcd1",
-    "energy": 1758,
-    "energyCapacity": 3000,
-    "ticksToRegeneration": 168
+    "store": {
+      "energy": 1752
+    },
+    "storeCapacity": 2000,
+    "ticksToDecay": 394,
+    "hits": 250000,
+    "hitsMax": 250000,
+    "structureType": "container"
   }
 ]
