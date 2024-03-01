@@ -8,10 +8,15 @@
  */
 var constant = require('constant');
 const common = require('common');
+const SOURCE_1_ID = '5bbcacc19099fc012e636253';
+const SOURCE_2_ID = '5bbcacc19099fc012e636254';
+const SOURCE_1_MAX_HARVEST_NUM = 4;
+const SOURCE_2_MAX_HARVEST_NUM = 3;
+const BASEHARVESTER_MAX_NUM = SOURCE_1_MAX_HARVEST_NUM + SOURCE_2_MAX_HARVEST_NUM;
 
 module.exports = {
   isStartUp: true,
-  baseHarvestersMaxNum:5,
+  baseHarvestersMaxNum: 6,
   generateCreeps: function () {
 
     const creeps = _.filter(Game.creeps);
@@ -34,8 +39,12 @@ module.exports = {
     const baseHarvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'baseHarvester');
 
     const constructionSites = Game.rooms[constant.TARGET_ROOM_ID].find(FIND_MY_CONSTRUCTION_SITES);
-    
+
     if (this.isStartUp && baseHarvesters.length < this.baseHarvestersMaxNum) {
+      const room = Game.rooms[constant.TARGET_ROOM_ID];
+      if (room.energyCapacityAvailable > 900) {
+        this.isStartUp = false;
+      }
       this.createHarvesterCreep([WORK, WORK, CARRY, MOVE], 'baseHarvester');
       return true;
     }
@@ -139,6 +148,15 @@ module.exports = {
         targetSourceId = sourceId;
       }
     }
+
+    if(harvesterRole =='baseHarvester'){
+      if (harvestersPerSource[SOURCE_1_ID] < SOURCE_1_MAX_HARVEST_NUM){
+        targetSourceId = SOURCE_1_ID;
+      } else if (harvestersPerSource[SOURCE_2_ID] < SOURCE_2_MAX_HARVEST_NUM){
+        targetSourceId = SOURCE_2_ID;
+      }
+    }
+
     let ret = Game.spawns[constant.SPAWN_HOME].spawnCreep(bodyParts
       , harvesterRole + Game.time
       , { memory: { role: harvesterRole, targetRoomId: constant.TARGET_ROOM_ID, targetSourceId: targetSourceId } });

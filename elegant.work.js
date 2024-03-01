@@ -267,8 +267,10 @@ module.exports = {
             // creep.memory.finishedWork = false;
             return false;
         }
-
-        const target = Game.getObjectById(creep.memory.targetSourceId);
+        let target = Game.getObjectById(creep.memory.targetSourceId);
+        // if(creep.memory.role == 'baseHarvester'){
+        //     target = creep.pos.findClosestByPath(FIND_SOURCES);
+        // }
 
         if (!target || target.energy == 0) {
             creep.say('NO⛏️！');
@@ -282,7 +284,7 @@ module.exports = {
             creep.moveTo(target, { visualizePathStyle: { stroke: '#ffaa00' } })
             // let path = creep.pos.findPathTo(target);
             // creep.move(path[0].direction,{visualizePathStyle:{stroke:'#ffaa00'}});
-            creep.say('⛏️' + 'Minecraft!');
+            creep.say('⛏️' + 'Source!');
             return true;
         }
 
@@ -312,7 +314,7 @@ module.exports = {
         return true;
     },
     goWithdrawFromStorage: function (creep) {
-        if (creep.store[RESOURCE_ENERGY] > 8) {
+        if (creep.store[RESOURCE_ENERGY] > 0) {
             //有能量，不需要去提取能量
             return false;
         }
@@ -337,7 +339,7 @@ module.exports = {
         return true;
     },
     goWithdrawEnergy: function (creep) {
-        if (creep.store[RESOURCE_ENERGY] < 8) {
+        if (creep.store[RESOURCE_ENERGY] < 1) {
             // 寻找最近的容器或存储
             const source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
@@ -380,7 +382,7 @@ module.exports = {
 
         if (creep.build(target) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, { visualizePathStyle: { stroke: '#b88114' } });
-            creep.say('🛠️');
+            creep.say('🛠️'+target.structureType);
         }
         return true;
 
@@ -516,7 +518,7 @@ module.exports = {
     },
     // 如果当前所在的pos有resource在地上，就顺便pickup
     pickupByChance: function (creep) {
-        if (creep.store.getFreeCapacity() < 20) {
+        if (creep.store.getFreeCapacity() < 10) {
             return false;
         }
         var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 1);
