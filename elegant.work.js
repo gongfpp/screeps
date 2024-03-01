@@ -20,27 +20,23 @@ module.exports = {
             const creep = Game.creeps[idx];
             if (creep.memory.role == 'harvester') {
                 did = this.harvesterDo(creep);
-            }
-            else if (creep.memory.role == 'supporter') {
+            } else if (creep.memory.role == 'supporter') {
                 did = this.supporterDo(creep);
-            }
-            else if (creep.memory.role == 'upgrader') {
+            } else if (creep.memory.role == 'upgrader') {
                 this.upgraderDo(creep);
-            }
-            else if (creep.memory.role == 'builder') {
+            } else if (creep.memory.role == 'builder') {
                 this.builderDo(creep);
-            }
-            else if (creep.memory.role == 'xiangzi') {
+            } else if (creep.memory.role == 'xiangzi') {
                 did = this.xiangziDo(creep);
-                // console.log(`${creep.name} do ${did}`);
-            }
-            else if (creep.memory.role == 'attacker') {
+                console.log(`${creep.name} do ${did}`);
+            } else if (creep.memory.role == 'attacker') {
                 this.attackerDo(creep);
-            }
-            else if (creep.memory.role == 'defender') {
+            } else if (creep.memory.role == 'defender') {
                 this.attackerDo(creep);
             } else if (creep.memory.role == 'baseHarvester') {
                 this.baseHarvesterDo(creep);
+            } else if (creep.memory.role == 'baseSupporter') {
+                this.supporterDo(creep);
             }
         }
     },
@@ -51,15 +47,19 @@ module.exports = {
         if (this.goHarvest(creep)) {
             return 'goHarvest';
         }
-        if (this.goStoreImportant(creep, 9)) {
+        if (this.goStoreAny(creep, 3)) {
             return 'goStoreImportant';
         }
-        if (this.goBuild(creep, 5)) {
-            return 'goBuild';
-        }
-        if (this.supporterDo(creep)) {
-            return 'supporterDo';
-        }
+        
+        // if (this.goRepairRanged(creep, 2)) {
+        //     return 'goRepairRanged';
+        // }
+        // if (this.goBuild(creep, 5)) {
+        //     return 'goBuild';
+        // }
+        // if (this.upgraderDo(creep)) {
+        //     return 'supporterDo';
+        // }
 
         this.iAmLazyDog(creep);
         return false;
@@ -146,7 +146,7 @@ module.exports = {
         if (this.goTakeResource(creep, 2)) {
             return 'goTakeResource';
         }
-        if (this.goWithdrawFromContainer(creep)) {
+        if (this.goWithdrawFromContainer(creep,20)) {
             return 'goWithdrawFromContainer';
         }
         if (this.goWithdrawFromStorage(creep)) {
@@ -284,18 +284,21 @@ module.exports = {
             creep.moveTo(target, { visualizePathStyle: { stroke: '#ffaa00' } })
             // let path = creep.pos.findPathTo(target);
             // creep.move(path[0].direction,{visualizePathStyle:{stroke:'#ffaa00'}});
-            creep.say('⛏️' + 'Source!');
+            creep.say('⛏️S');
             return true;
         }
 
         return true;
     },
-    goWithdrawFromContainer: function (creep) {
+    goWithdrawFromContainer: function (creep,range) {
+        if (typeof range === 'undefined') {
+            range = 3;
+        }
         if (creep.store[RESOURCE_ENERGY] > 8) {
             //有能量，不需要去提取能量
             return false;
         }
-        const sources = creep.pos.findInRange(FIND_STRUCTURES, 3, {
+        const sources = creep.pos.findInRange(FIND_STRUCTURES, range, {
             filter: (structure) => {
                 return (
                     structure.structureType == STRUCTURE_CONTAINER
@@ -335,7 +338,7 @@ module.exports = {
             return true;
         }
         creep.say('No E');
-        this.harvesterDo(creep);
+        // this.harvesterDo(creep);
         return true;
     },
     goWithdrawEnergy: function (creep) {
@@ -382,7 +385,7 @@ module.exports = {
 
         if (creep.build(target) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, { visualizePathStyle: { stroke: '#b88114' } });
-            creep.say('🛠️'+target.structureType);
+            creep.say('🛠️' + target.structureType);
         }
         return true;
 
@@ -401,10 +404,10 @@ module.exports = {
         if (!target) {
             return false;
         }
-
+        this.dontBlockTheSource(creep, target);
         if (creep.repair(target) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, { visualizePathStyle: { stroke: '#e63995' } });
-            creep.say('Repairing!');
+            creep.say('Ring!');
             return true;
         }
         return true;

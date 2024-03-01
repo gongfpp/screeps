@@ -40,7 +40,7 @@ module.exports = {
         let targetLinkEnergy = targetLink ? targetLink.store.getUsedCapacity(RESOURCE_ENERGY) : Infinity;
         let targetLink2Energy = targetLink2 ? targetLink2.store.getUsedCapacity(RESOURCE_ENERGY) : Infinity;
 
-        // 确定哪个Link的能量更少，并向其传输能量
+
         if (targetLinkEnergy < targetLink2Energy) {
             if (targetLink && targetLink.store.getFreeCapacity(RESOURCE_ENERGY) > 99) {
                 sourceLink.transferEnergy(targetLink);

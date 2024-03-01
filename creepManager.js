@@ -10,13 +10,14 @@ var constant = require('constant');
 const common = require('common');
 const SOURCE_1_ID = '5bbcacc19099fc012e636253';
 const SOURCE_2_ID = '5bbcacc19099fc012e636254';
-const SOURCE_1_MAX_HARVEST_NUM = 4;
-const SOURCE_2_MAX_HARVEST_NUM = 3;
+const SOURCE_1_MAX_HARVEST_NUM = 3;
+const SOURCE_2_MAX_HARVEST_NUM = 1;
 const BASEHARVESTER_MAX_NUM = SOURCE_1_MAX_HARVEST_NUM + SOURCE_2_MAX_HARVEST_NUM;
 
 module.exports = {
   isStartUp: true,
-  baseHarvestersMaxNum: 6,
+  // baseHarvestersMaxNum: 9,
+  baseSupporterMaxNum: 3,
   generateCreeps: function () {
 
     const creeps = _.filter(Game.creeps);
@@ -37,10 +38,11 @@ module.exports = {
     const repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
     const xiangzis = _.filter(Game.creeps, (creep) => creep.memory.role == 'xiangzi');
     const baseHarvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'baseHarvester');
+    const baseSupporters = _.filter(Game.creeps, (creep) => creep.memory.role == 'baseSupporter');
 
     const constructionSites = Game.rooms[constant.TARGET_ROOM_ID].find(FIND_MY_CONSTRUCTION_SITES);
 
-    if (this.isStartUp && baseHarvesters.length < this.baseHarvestersMaxNum) {
+    if (this.isStartUp && baseHarvesters.length < BASEHARVESTER_MAX_NUM) {
       const room = Game.rooms[constant.TARGET_ROOM_ID];
       if (room.energyCapacityAvailable > 900) {
         this.isStartUp = false;
@@ -48,6 +50,16 @@ module.exports = {
       this.createHarvesterCreep([WORK, WORK, CARRY, MOVE], 'baseHarvester');
       return true;
     }
+
+    if (this.isStartUp && baseSupporters.length < this.baseSupporterMaxNum) {
+      const room = Game.rooms[constant.TARGET_ROOM_ID];
+      if (room.energyCapacityAvailable > 900) {
+        this.isStartUp = false;
+      }
+      this.createLittleWorker('baseSupporter', [WORK, CARRY, CARRY, MOVE, MOVE]);
+      return true;
+    }
+
     if (harvesters.length < constant.HAVERSTER_MAX_NUM) {
       this.createHarvesterCreep([
         WORK, WORK, WORK, WORK, WORK, WORK,
@@ -57,7 +69,7 @@ module.exports = {
       ], 'harvester');
       return true;
     }
-    if (xiangzis.length < constant.XIANGZI_MAX_NUM && constant.IS_HOME_PEACE) {
+    if (!this.isStartUp && xiangzis.length < constant.XIANGZI_MAX_NUM && constant.IS_HOME_PEACE) {
       this.createLittleWorker('xiangzi');
       return true;
     }
@@ -80,12 +92,15 @@ module.exports = {
       constant.IS_HOME_PEACE = true;
     }
   },
-  createLittleWorker: function (roleName) {
-    Game.spawns[constant.SPAWN_HOME].spawnCreep([
-      WORK, CARRY, MOVE,
-      WORK, CARRY, MOVE
-      //sum = 400
-    ]
+  createLittleWorker: function (roleName, bodyParts) {
+    if (typeof bodyParts === 'undefined') {
+      bodyParts = [
+        WORK, CARRY, MOVE,
+        WORK, CARRY, MOVE
+        //sum = 400
+      ];
+    }
+    Game.spawns[constant.SPAWN_HOME].spawnCreep(bodyParts
       , roleName + Game.time
       , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
   },
@@ -149,10 +164,10 @@ module.exports = {
       }
     }
 
-    if(harvesterRole =='baseHarvester'){
-      if (harvestersPerSource[SOURCE_1_ID] < SOURCE_1_MAX_HARVEST_NUM){
+    if (harvesterRole == 'baseHarvester') {
+      if (harvestersPerSource[SOURCE_1_ID] < SOURCE_1_MAX_HARVEST_NUM) {
         targetSourceId = SOURCE_1_ID;
-      } else if (harvestersPerSource[SOURCE_2_ID] < SOURCE_2_MAX_HARVEST_NUM){
+      } else if (harvestersPerSource[SOURCE_2_ID] < SOURCE_2_MAX_HARVEST_NUM) {
         targetSourceId = SOURCE_2_ID;
       }
     }
