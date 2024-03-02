@@ -14,13 +14,13 @@ const SOURCE_1_MAX_HARVEST_NUM = 3;
 const SOURCE_2_MAX_HARVEST_NUM = 1;
 const BASEHARVESTER_MAX_NUM = SOURCE_1_MAX_HARVEST_NUM + SOURCE_2_MAX_HARVEST_NUM;
 
-const HARVESTER_BODYPART_300 = [WORK, WORK, CARRY, MOVE];
+const WORK_BODYPART_300 = [WORK, WORK, CARRY, MOVE];
 const HAULER_BODYPART_300 = [WORK, CARRY, CARRY, MOVE, MOVE];
 
-const HARVESTER_BODYPART_550 = [WORK, WORK, CARRY, CARRY, MOVE, MOVE];
+const WORK_BODYPART_550 = [WORK, WORK, CARRY, CARRY, MOVE, MOVE];
 const HAULER_BODYPART_550 = [WORK, WORK, CARRY, CARRY, MOVE, MOVE];
 
-const HARVESTER_BODYPART_800 = [
+const WORK_BODYPART_800 = [
   WORK, WORK, WORK, WORK, WORK, WORK,
   CARRY,
   MOVE, MOVE, MOVE
@@ -31,14 +31,20 @@ const HAULER_BODYPART_800 = [
   WORK, CARRY, MOVE,
   WORK, CARRY, MOVE
 ];
+const UPGRADER_BODYPART_1200 = [
+  WORK, WORK, CARRY, MOVE,
+  WORK, WORK, CARRY, MOVE,
+  WORK, WORK, CARRY, MOVE,
+  WORK, WORK, CARRY, MOVE
+];
 
 
 module.exports = {
   isStartUp: false,
   // baseHarvestersMaxNum: 9,
   baseSupporterMaxNum: 8,
-  baseBuilderMaxNum: 1,
-  midUpgraderMaxNum:3,
+  baseBuilderMaxNum: 0,
+  midUpgraderMaxNum: 3,
   generateCreeps: function () {
 
     const creeps = _.filter(Game.creeps);
@@ -47,8 +53,8 @@ module.exports = {
     if (!constant.IS_HOME_PEACE
       && _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester').length < 1
       || creeps.length < 2) {
-      this.createHarvesterCreep([WORK, CARRY, MOVE], 'baseHarvester');
-      return true;
+      this.createCreep('baseHarvester', [WORK, CARRY, MOVE]);
+      return 'baseHarvester';
     }
 
     //creeps by type
@@ -68,7 +74,7 @@ module.exports = {
       if (room.energyCapacityAvailable > 900) {
         this.isStartUp = false;
       }
-      ret = this.createLittleWorker('baseSupporter', [WORK, WORK, CARRY, CARRY, MOVE, MOVE]);
+      ret = this.createCreep('baseSupporter', HAULER_BODYPART_550);
       return ret == OK ? 'baseSupporter' : false;
     }
 
@@ -78,23 +84,11 @@ module.exports = {
       if (room.energyCapacityAvailable > 900) {
         this.isStartUp = false;
       }
-      ret = this.createLittleWorker('baseBuilder', [WORK, WORK, CARRY, CARRY, MOVE, MOVE]);
+      ret = this.createCreep('baseBuilder', HAULER_BODYPART_550);
       return ret == OK ? 'baseBuilder' : false;
     }
 
-
-
     const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
-    const supporters = _.filter(Game.creeps, (creep) => creep.memory.role == 'supporter');
-    const upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-    const builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-    const repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
-    const xiangzis = _.filter(Game.creeps, (creep) => creep.memory.role == 'xiangzi');
-
-    const constructionSites = Game.rooms[constant.TARGET_ROOM_ID].find(FIND_MY_CONSTRUCTION_SITES);
-
-
-
     if (harvesters.length < constant.HAVERSTER_MAX_NUM) {
       ret = this.createHarvesterCreep([
         WORK, WORK, WORK, WORK, WORK, WORK,
@@ -105,100 +99,53 @@ module.exports = {
       return ret == OK ? 'harvester' : false;
     }
 
-    if (xiangzis.length < constant.XIANGZI_MAX_NUM && constant.IS_HOME_PEACE) {
-      this.createLittleWorker('xiangzi');
-      return 'xiangzi';
-    }
-
+    const supporters = _.filter(Game.creeps, (creep) => creep.memory.role == 'supporter');
     if (supporters.length < constant.SUPPORTER_MAX_NUM) {
-      this.createGeneralCarryer('supporter');
+      this.createCreep('supporter', HAULER_BODYPART_800);
       return 'supporter';
     }
 
+    const upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
     if (upgraders.length < this.midUpgraderMaxNum) {
-      this.createStandWorker('upgrader', HAULER_BODYPART_800);
+      this.createCreep('upgrader', UPGRADER_BODYPART_1200);
       return 'upgrader';
     }
 
+    const constructionSites = Game.rooms[constant.TARGET_ROOM_ID].find(FIND_MY_CONSTRUCTION_SITES);
+    const builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     if (constructionSites.length > 0 && builders.length < constant.BUILDER_MAX_NUM) {
-      this.createGeneralCarryer('builder');
+      this.createCreep('builder', HAULER_BODYPART_800);
       return 'builder';
+    }
+
+    // const repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
+    const xiangzis = _.filter(Game.creeps, (creep) => creep.memory.role == 'xiangzi');
+    if (xiangzis.length < constant.XIANGZI_MAX_NUM && constant.IS_HOME_PEACE) {
+      this.createCreep('xiangzi', WORK_BODYPART_300);
+      return 'xiangzi';
     }
 
     if (constant.IsUnderAttack == 0) {
       constant.IS_HOME_PEACE = true;
     }
+
     return false;
   },
-  createLittleWorker: function (roleName, bodyParts) {
-    if (typeof bodyParts === 'undefined') {
-      bodyParts = [
-        WORK, CARRY, MOVE,
-        WORK, CARRY, MOVE
-        //sum = 400
-      ];
-    }
-    ret = Game.spawns[constant.SPAWN_HOME].spawnCreep(bodyParts
+  createCreep(roleName, bodyParts) {
+    ret = Game.spawns[constant.SPAWN_HOME].spawnCreep(
+      bodyParts
       , roleName + Game.time
-      , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
+      , { memory: { role: roleName } });
     if (ret == OK) {
       return true;
     }
+    console.log(`create ${roleName} failed , ret = ${ret}`);
     return false;
   },
-  createStandWorker: function (roleName, bodyParts) {
-    if (typeof bodyParts === 'undefined') {
-      bodyParts = [
-        WORK, WORK, CARRY, MOVE,
-        WORK, WORK, CARRY, MOVE,
-        WORK, WORK, CARRY, MOVE,
-        WORK, WORK, CARRY, MOVE
-        //cost :1200
-      ]
-    }
-    Game.spawns[constant.SPAWN_HOME].spawnCreep(
-      bodyParts
-      , roleName + Game.time
-      , {
-        memory: {
-          role: roleName, targetRoomId: constant.TARGET_ROOM_ID
-        }
-      });
-  },
-  createGeneralCarryer: function (roleName, bodyParts) {
-    if (typeof bodyParts === 'undefined') {
-      bodyParts = [
-        WORK, CARRY, MOVE,
-        WORK, CARRY, MOVE,
-        WORK, CARRY, MOVE,
-        WORK, CARRY, MOVE
-        //cost : 800
-      ]
-    }
-    Game.spawns[constant.SPAWN_HOME].spawnCreep(
-      bodyParts, roleName + Game.time
-      , { memory: { role: roleName, targetRoomId: constant.TARGET_ROOM_ID } });
-  },
-  // 通用单位
-  createGeneralWorker: function (roleName, bodyParts) {
-    Game.spawns[constant.SPAWN_HOME].spawnCreep(
-      bodyParts, roleName + Game.time
-      , {
-        memory: {
-          role: roleName
-          , targetRoomId: constant.TARGET_ROOM_ID
-        }
-      });
-  },
-
   createHarvesterCreep: function (bodyParts, harvesterRole) {
     if (!bodyParts) {
-      bodyParts = [
-        WORK, WORK, WORK, WORK, WORK, WORK,
-        CARRY, CARRY, CARRY,
-        MOVE, MOVE, MOVE
-        //cost 800
-      ];
+      console.log('createHarvesterCreep Failed ,no bodyParts!');
+      return false;
     }
     let harvestersPerSource = {};
     let sources = Game.spawns[constant.SPAWN_HOME].room.find(FIND_SOURCES);

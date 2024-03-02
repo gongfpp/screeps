@@ -8,7 +8,8 @@
  */
 var constant = require('constant');
 module.exports = {
-    isTowerAttack: false,
+    isTowerAttack: true,
+    towerAttackRange:30,
     structuresDo: function () {
         this.linkDo();
 
@@ -59,7 +60,7 @@ module.exports = {
         if (!this.isTowerAttack){
             return false;
         }
-        let hostiles = tower.pos.findInRange(FIND_HOSTILE_CREEPS, 16);
+        let hostiles = tower.pos.findInRange(FIND_HOSTILE_CREEPS, this.towerAttackRange);
         const hostile = tower.pos.findClosestByRange(hostiles);
         if (hostile) {
             var username = hostile.owner.username;

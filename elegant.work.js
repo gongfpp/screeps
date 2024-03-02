@@ -19,6 +19,7 @@ const CONTAINER_TO_GROUP_IDs = ['65e0bc96713cf61f6156028b', '65e1e578372635ea22c
 
 module.exports = {
     creepsDo: function () {
+        
         //creeps do
         for (const idx in Game.creeps) {
             const creep = Game.creeps[idx];
@@ -32,7 +33,7 @@ module.exports = {
                 this.builderDo(creep);
             } else if (creep.memory.role == 'xiangzi') {
                 did = this.xiangziDo(creep);
-                console.log(`${creep.name} do ${did}`);
+                // console.log(`${creep.name} do ${did}`);
             } else if (creep.memory.role == 'attacker') {
                 this.attackerDo(creep);
             } else if (creep.memory.role == 'defender') {
@@ -125,7 +126,7 @@ module.exports = {
         if (this.goWithdrawEnergy(creep)) {
             return 'goWithdrawEnergy';
         }
-        if (this.goStoreImportant(creep, 1)) {
+        if (this.goStoreImportant(creep, 2)) {
             return 'goStoreExtensions';
         }
         if (this.goUpgrade(creep)) {
