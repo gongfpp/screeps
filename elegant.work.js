@@ -19,10 +19,14 @@ const CONTAINER_TO_GROUP_IDs = ['65e0bc96713cf61f6156028b', '65e1e578372635ea22c
 
 module.exports = {
     creepsDo: function () {
-        
         //creeps do
         for (const idx in Game.creeps) {
             const creep = Game.creeps[idx];
+            // common 
+            if (this.pickupByChance(creep)) {
+                return 'pickupByChance';
+            }
+            //specific 
             if (creep.memory.role == 'harvester') {
                 did = this.harvesterDo(creep);
             } else if (creep.memory.role == 'supporter') {
@@ -33,7 +37,7 @@ module.exports = {
                 this.builderDo(creep);
             } else if (creep.memory.role == 'xiangzi') {
                 did = this.xiangziDo(creep);
-                // console.log(`${creep.name} do ${did}`);
+                console.log(`${creep.name} do ${did}`);
             } else if (creep.memory.role == 'attacker') {
                 this.attackerDo(creep);
             } else if (creep.memory.role == 'defender') {
@@ -48,9 +52,7 @@ module.exports = {
         }
     },
     baseHarvesterDo: function (creep) {
-        if (this.pickupByChance(creep)) {
-            return 'pickupByChance';
-        }
+
         if (this.goHarvest(creep)) {
             return 'goHarvest';
         }
@@ -72,9 +74,6 @@ module.exports = {
         return false;
     },
     harvesterDo: function (creep) {
-        if (this.pickupByChance(creep)) {
-            return 'pickupByChance';
-        }
         if (this.goHarvest(creep)) {
             return 'goHarvest';
         }
@@ -92,9 +91,6 @@ module.exports = {
         return false;
     },
     supporterDo: function (creep) {
-        if (this.pickupByChance(creep)) {
-            return 'pickupByChance';
-        }
         if (this.goTakeResource(creep, 20)) {
             return 'goTakeResource';
         }
@@ -110,7 +106,7 @@ module.exports = {
         if (this.goBuild(creep, 5)) {
             return 'goBuild';
         }
-        if (this.goRepair(creep)) {
+        if (this.goRepairBelowHalf(creep)) {
             return 'goRepair';
         }
         if (this.goUpgrade(creep)) {
@@ -120,9 +116,6 @@ module.exports = {
         return false;
     },
     upgraderDo: function (creep) {
-        if (this.pickupByChance(creep)) {
-            return 'pickupByChance';
-        }
         if (this.goWithdrawEnergy(creep)) {
             return 'goWithdrawEnergy';
         }
@@ -137,10 +130,6 @@ module.exports = {
         return false;
     },
     builderDo: function (creep) {
-
-        if (this.pickupByChance(creep)) {
-            return 'pickupByChance';
-        }
         if (this.goWithdrawEnergy(creep)) {
             return 'goWithdrawEnergy';
         }
@@ -156,9 +145,6 @@ module.exports = {
         if (this.goTakeResource(creep, 2)) {
             return 'goTakeResource';
         }
-        // if (this.goWithdrawFromStorage(creep)) {
-        //     return 'goWithdrawFromStorage';
-        // }
         if (this.goFillLink(creep)) {
             return 'goFillLink';
         }
@@ -174,11 +160,14 @@ module.exports = {
         if (this.goHaulContainers(creep, CONTAINER_FROM_GROUP_IDs, CONTAINER_TO_GROUP_IDs)) {
             return 'goHaulContainers';
         }
+        if (this.goWithdrawFromContainer(creep, 3)) {
+            return 'goWithdrawFromContainer';
+        }
         // if (this.goStoreStorage(creep, 3)) {
         //     return 'goStoreStorage';
         // }
-        if (this.goWithdrawFromContainer(creep, 3)) {
-            return 'goWithdrawFromContainer';
+        if (this.goWithdrawFromStorage(creep)) {
+            return 'goWithdrawFromStorage';
         }
         if (this.goFlagRally(creep, 'xiangzi')) {
             return 'goFlagRally';
@@ -456,7 +445,7 @@ module.exports = {
         return true;
 
     },
-    goRepair: function (creep) {
+    goRepairBelowHalf: function (creep) {
         if (creep.store.getUsedCapacity() < 1) {
             return false;
         }
