@@ -155,9 +155,6 @@ module.exports = {
         if (this.goTakeResource(creep, 2)) {
             return 'goTakeResource';
         }
-        // if (this.goWithdrawFromContainer(creep, 3)) {
-        //     return 'goWithdrawFromContainer';
-        // }
         // if (this.goWithdrawFromStorage(creep)) {
         //     return 'goWithdrawFromStorage';
         // }
@@ -179,6 +176,9 @@ module.exports = {
         // if (this.goStoreStorage(creep, 3)) {
         //     return 'goStoreStorage';
         // }
+        if (this.goWithdrawFromContainer(creep, 3)) {
+            return 'goWithdrawFromContainer';
+        }
         if (this.goFlagRally(creep, 'xiangzi')) {
             return 'goFlagRally';
         }
