@@ -9,7 +9,7 @@
 var constant = require('constant');
 
 module.exports = {
-    
+
     periodCheck: function () {
         if (Game.time % constant.SHORT_PERIROD_TICKS == 0) {
             const room = Game.rooms[constant.TARGET_ROOM_ID];
@@ -78,30 +78,30 @@ module.exports = {
         //     console.log(`[Long Period Check] `);
         // }
     },
-    bodyPartCount:function(creep,bodyPartType){
+    bodyPartCount: function (creep, bodyPartType) {
         return creep.body.filter(part => part.type === bodyPartType).length;
     },
-    countMiningPositions:function(source) {
-    // 获取Source周围的地形数据
-    let terrain = source.room.lookForAtArea(
-        LOOK_TERRAIN,
-        source.pos.y - 1,
-        source.pos.x - 1,
-        source.pos.y + 1,
-        source.pos.x + 1,
-        true
-    );
+    countMiningPositions: function (source) {
+        // 获取Source周围的地形数据
+        let terrain = source.room.lookForAtArea(
+            LOOK_TERRAIN,
+            source.pos.y - 1,
+            source.pos.x - 1,
+            source.pos.y + 1,
+            source.pos.x + 1,
+            true
+        );
 
-    // 计算可以用来采矿的位置数量
-    let count = 0;
-    for (let tile of terrain) {
-        if (tile.terrain === 'plain' || tile.terrain === 'swamp') {
-            count++;
+        // 计算可以用来采矿的位置数量
+        let count = 0;
+        for (let tile of terrain) {
+            if (tile.terrain === 'plain' || tile.terrain === 'swamp') {
+                count++;
+            }
         }
-    }
 
-    // 减去source本身所占的位置
-    return count - 1;
-}
+        // 减去source本身所占的位置
+        return count - 1;
+    }
 
 };

@@ -14,44 +14,53 @@ const SOURCE_2_ID = '5bbcacc19099fc012e636254';
 const SOURCE_1_MAX_HARVEST_NUM = 3;
 const SOURCE_2_MAX_HARVEST_NUM = 1;
 
-const CREEP_LEVEL_FOR_BODYPART = 3;
-
 const BASEHARVESTER_MAX_NUM = SOURCE_1_MAX_HARVEST_NUM + SOURCE_2_MAX_HARVEST_NUM;
 
-const WORK_BODYPART_300 = [WORK, WORK, CARRY, MOVE];
-const HAULER_BODYPART_300 = [WORK, CARRY, CARRY, MOVE, MOVE];
-
-const WORK_BODYPART_550 = [WORK, WORK, CARRY, CARRY, MOVE, MOVE];
-const HAULER_BODYPART_550 = [WORK, WORK, CARRY, CARRY, MOVE, MOVE];
-
-const WORK_BODYPART_800 = [
+const HARVESTER_BODYPART_300 = [WORK, WORK, CARRY, MOVE];
+const HARVESTER_BODYPART_550 = [WORK, WORK, CARRY, CARRY, MOVE, MOVE];
+const HARVESTER_BODYPART_800 = [
   WORK, WORK, WORK, WORK, WORK, WORK,
   CARRY,
-  MOVE, MOVE,MOVE
+  MOVE, MOVE, MOVE
 ];
+const HARVESTER_BODYPART_1300 = [
+  WORK, WORK, WORK, WORK, WORK, WORK,
+  CARRY, CARRY,
+  MOVE, MOVE, MOVE
+];
+const HARVESTER_BODYPART = [[], HARVESTER_BODYPART_300, HARVESTER_BODYPART_550, HARVESTER_BODYPART_800, HARVESTER_BODYPART_1300];
+
+const HAULER_BODYPART_300 = [WORK, CARRY, CARRY, MOVE, MOVE];
+const HAULER_BODYPART_550 = [WORK, WORK, CARRY, CARRY, MOVE, MOVE];
 const HAULER_BODYPART_800 = [
   WORK, CARRY, MOVE,
   WORK, CARRY, MOVE,
-  WORK, CARRY, MOVE,
-  WORK, CARRY, MOVE
+  CARRY, CARRY, MOVE,
+  CARRY, CARRY, MOVE
 ];
-const UPGRADER_BODYPART_1200 = [
+const UPGRADER_BODYPART_1300 = [
+  WORK, WORK, CARRY, MOVE, MOVE,
+  WORK, WORK, CARRY, MOVE, MOVE,
+  WORK, CARRY, CARRY, MOVE,
+  WORK, CARRY, CARRY, MOVE
+];
+const UPGRADER_BODYPART_1600 = [
   WORK, WORK, CARRY, MOVE,
   WORK, WORK, CARRY, MOVE,
   WORK, WORK, CARRY, MOVE,
   WORK, WORK, CARRY, MOVE
 ];
-
+const UPGRADER_BODYPART = [[], HAULER_BODYPART_300, HAULER_BODYPART_550, HAULER_BODYPART_800, UPGRADER_BODYPART_1300, UPGRADER_BODYPART_1600];
 
 module.exports = {
   isStartUp: false,
   // baseHarvestersMaxNum: 9,
-  creepLevel: 4,
   // baseSupporterMaxNum: 8,
   baseBuilderMaxNum: 0,
-  midUpgraderMaxNum: 1,
-  isStartUpThreshold: 800,
-  upgraderFixIfNoBuilderExist: 5,
+  upgraderMaxNum: 0,
+  upgraderFixIfNoBuilderExist: 3,
+
+  isStartUpEnergyThreshold: 800,
   generateCreeps: function () {
 
     const creeps = _.filter(Game.creeps);
@@ -100,7 +109,7 @@ module.exports = {
     //harvester
     const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
     if (harvesters.length < constant.HAVERSTER_MAX_NUM) {
-      ret = this.createHarvesterCreep(WORK_BODYPART_800, 'harvester');
+      ret = this.createHarvesterCreep(HARVESTER_BODYPART[4], 'harvester');
       return ret == OK ? 'harvester' : false;
     }
 
@@ -115,15 +124,19 @@ module.exports = {
 
     //upgrader
     const upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-    if (upgraders.length < this.midUpgraderMaxNum
-      || upgraders.length < this.midUpgraderMaxNum + this.upgraderFixIfNoBuilderExist && constructionSites.length < 1) {
-      this.createCreep('upgrader', HAULER_BODYPART_800);
+    if (upgraders.length < this.upgraderMaxNum
+      || (
+        (upgraders.length < this.upgraderMaxNum + this.upgraderFixIfNoBuilderExist)
+        && constructionSites.length < 1
+      )
+    ) {
+      this.createCreep('upgrader', UPGRADER_BODYPART[4]);
       return 'upgrader';
     }
 
     //builder
     const builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-    if (constructionSites.length > 0 && builders.length < constant.BUILDER_MAX_NUM) {
+    if (constructionSites.length > 1 && builders.length < constant.BUILDER_MAX_NUM) {
       this.createCreep('builder', HAULER_BODYPART_800);
       return 'builder';
     }

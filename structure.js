@@ -7,6 +7,9 @@
  * mod.thing == 'a thing'; // true
  */
 var constant = require('constant');
+const LINK_FROM_GROUP = [];
+const LINK_TO_GROUP = [];
+
 module.exports = {
     isTowerAttack: true,
     towerAttackRange:30,
