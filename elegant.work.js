@@ -34,6 +34,7 @@ module.exports = {
                 did = this.harvesterDo(creep);
             } else if (creep.memory.role == 'supporter') {
                 did = this.supporterDo(creep);
+                console.log(`${creep.name} do ${did}`);
             } else if (creep.memory.role == 'upgrader') {
                 this.upgraderDo(creep);
             } else if (creep.memory.role == 'builder') {
@@ -64,7 +65,7 @@ module.exports = {
         if (this.goHarvest(creep)) {
             return 'goHarvest';
         }
-        if (this.goStoreAny(creep, 3)) {
+        if (this.goStoreLink(creep, 3)) {
             return 'goStoreImportant';
         }
 
@@ -88,8 +89,11 @@ module.exports = {
         if (!constant.IS_HOME_PEACE && this.goStoreImportant(creep, 3)) {
             return 'goStoreImportant';
         }
-        if (this.goStoreAny(creep, 3)) {
-            return 'goStoreContainers';
+        if (this.goStoreLink(creep,1)){
+            return 'goStoreLink';
+        }
+        if (this.goStoreLink(creep, 3)) {
+            return 'goStoreAny';
         }
         if (this.goUpgrade(creep)) {
             return 'goUpgrade';
@@ -108,7 +112,7 @@ module.exports = {
         if (this.goBuild(creep, 5)) {
             return 'goBuild';
         }
-        if (this.goRepairBelowRate(creep,0.8)) {
+        if (this.goRepairBelowRate(creep, 0.8)) {
             return 'goRepair';
         }
         if (this.goUpgrade(creep)) {
@@ -117,8 +121,8 @@ module.exports = {
         if (this.goTakeResource(creep, 20)) {
             return 'goTakeResource';
         }
-        if (this.goWithdrawEnergy(creep)) {
-            return 'goWithdrawEnergy';
+        if (this.goWithdrawAny(creep)) {
+            return 'goWithdrawAny';
         }
         this.iAmLazyDog(creep);
         return false;
@@ -133,16 +137,16 @@ module.exports = {
         if (this.goUpgrade(creep)) {
             return 'goUpgrade';
         }
-        if (this.goWithdrawEnergy(creep)) {
-            return 'goWithdrawEnergy';
+        if (this.goWithdrawAny(creep)) {
+            return 'goWithdrawAny';
         }
 
         this.iAmLazyDog(creep);
         return false;
     },
     builderDo: function (creep) {
-        if (this.goWithdrawEnergy(creep)) {
-            return 'goWithdrawEnergy';
+        if (this.goWithdrawAny(creep)) {
+            return 'goWithdrawAny';
         }
         if (this.goFlagRally(creep, 'build')) {
             return 'goFlagRally';
@@ -293,7 +297,7 @@ module.exports = {
             creep.say('NO⛏️！');
 
             // 挖空了就先存一下 倒乾净口袋準備下一波
-            this.goStoreAny(creep, 1);
+            this.goStoreLink(creep, 1);
 
             return true;
         }
@@ -402,7 +406,7 @@ module.exports = {
 
         return false;
     },
-    goWithdrawEnergy: function (creep) {
+    goWithdrawAny: function (creep) {
         if (creep.store[RESOURCE_ENERGY] >= 1) {
             //有能量，不需要去提取能量
             return false;
@@ -449,10 +453,12 @@ module.exports = {
             creep.moveTo(target, { visualizePathStyle: { stroke: '#b88114' } });
             creep.say('🛠️' + target.structureType);
         }
+        this.goMove(creep, target);
+        // console.log(target);
         return true;
 
     },
-    goRepairBelowRate: function (creep,rate) {
+    goRepairBelowRate: function (creep, rate) {
         if (creep.store.getUsedCapacity() < 1) {
             return false;
         }
@@ -532,7 +538,28 @@ module.exports = {
         }
         return false;
     },
-    goStoreAny: function (creep, range) {
+    goStoreLink: function (creep, range) {
+        if (creep.store.getUsedCapacity() < 1) {
+            return false;
+        }
+        const storeTargets = creep.pos.findInRange(FIND_STRUCTURES, range, {
+            filter: (structure) => {
+                return ((structure.structureType == STRUCTURE_LINK) && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0)
+            }
+        });
+
+        if (storeTargets.length > 0) {
+            const target = creep.pos.findClosestByPath(storeTargets);
+            if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(target, { visualizePathStyle: { stroke: '#d174a8' } });
+                creep.say('Store!')
+                return true;
+            }
+            return true;
+        }
+        return false;
+    },
+    goStoreLink: function (creep, range) {
         if (creep.store.getUsedCapacity() < 1) {
             return false;
         }
@@ -677,7 +704,7 @@ module.exports = {
         creep.moveTo(targetPos, {
             visualizePathStyle: { stroke: '#66cdaa' }
         });
-        creep.say('➡️ ' + targetPos);
+        // creep.say(targetPos);
     },
     dontBlockTheSource: function (creep, target) {
         const distance = creep.pos.findInRange(FIND_SOURCES, 1);
