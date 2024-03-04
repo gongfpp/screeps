@@ -9,12 +9,14 @@
 var constant = require('constant');
 const LINK_FROM_GROUP = [];
 const LINK_TO_GROUP = [];
-const LINK_FROM_1 = '65e49a36b380eb0012da5440'
-const LINK_TO_1 = '65e4976d9f26eb0012604b9b';
 
 module.exports = {
     isTowerAttack: true,
     towerAttackRange: 30,
+    LINK_FROM_1:'65e49a36b380eb0012da5440',
+    LINK_TO_1:'65e4976d9f26eb0012604b9b',
+    LINK_TO_2:'',
+    
     structuresDo: function () {
         this.linkDo();
 
@@ -32,9 +34,9 @@ module.exports = {
         // }
     },
     linkDo: function () {
-        const sourceLink = Game.getObjectById(LINK_FROM_1);
-        const targetLink = Game.getObjectById(LINK_TO_1);
-        const targetLink2 = Game.getObjectById(constant.TARGET_LINK_2);
+        const sourceLink = Game.getObjectById(this.LINK_FROM_1);
+        const targetLink = Game.getObjectById(this.LINK_TO_1);
+        const targetLink2 = Game.getObjectById(this.LINK_TO_2);
 
         if (!sourceLink || !targetLink) {
             return false;

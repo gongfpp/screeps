@@ -144,7 +144,7 @@ module.exports = {
     //xiangzi
     const xiangzis = _.filter(Game.creeps, (creep) => creep.memory.role == 'xiangzi');
     if (xiangzis.length < constant.XIANGZI_MAX_NUM && constant.IS_HOME_PEACE) {
-      this.createCreep('xiangzi', HAULER_BODYPART_300);
+      this.createCreep('xiangzi', HAULER_BODYPART_800);
       return 'xiangzi';
     }
 
@@ -204,7 +204,7 @@ module.exports = {
       return true;
     }
 
-    return false;
+    return false; 
   },
   clearDeadMemory: function () {
     for (var name in Memory.creeps) {

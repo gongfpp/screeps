@@ -13,6 +13,7 @@
 var constant = require('constant');
 const common = require('./common');
 const creepManager = require('./creepManager');
+const structure = require('./structure');
 const CONTAINER_FROM_GROUP_IDs = ['65e0c8369cf7c4914b5873e0', '65e343696f0cfab7c352b9c3', '65e3edf1c3a96b31add8dd13'];
 const CONTAINER_TO_GROUP_IDs = ['65e0bc96713cf61f6156028b', '65e1e578372635ea22c045c0'];
 
@@ -34,7 +35,6 @@ module.exports = {
                 did = this.harvesterDo(creep);
             } else if (creep.memory.role == 'supporter') {
                 did = this.supporterDo(creep);
-                console.log(`${creep.name} do ${did}`);
             } else if (creep.memory.role == 'upgrader') {
                 this.upgraderDo(creep);
             } else if (creep.memory.role == 'builder') {
@@ -65,7 +65,7 @@ module.exports = {
         if (this.goHarvest(creep)) {
             return 'goHarvest';
         }
-        if (this.goStoreLink(creep, 3)) {
+        if (this.goStoreAny(creep, 3)) {
             return 'goStoreImportant';
         }
 
@@ -92,12 +92,12 @@ module.exports = {
         if (this.goStoreLink(creep,1)){
             return 'goStoreLink';
         }
-        if (this.goStoreLink(creep, 3)) {
+        if (this.goStoreAny(creep, 3)) {
             return 'goStoreAny';
         }
-        if (this.goUpgrade(creep)) {
-            return 'goUpgrade';
-        }
+        // if (this.goUpgrade(creep)) {
+        //     return 'goUpgrade';
+        // }
 
         this.iAmLazyDog(creep);
         return false;
@@ -121,8 +121,8 @@ module.exports = {
         if (this.goTakeResource(creep, 20)) {
             return 'goTakeResource';
         }
-        if (this.goWithdrawAny(creep)) {
-            return 'goWithdrawAny';
+        if (this.goWithdrawEnergy(creep)) {
+            return 'goWithdrawEnergy';
         }
         this.iAmLazyDog(creep);
         return false;
@@ -137,16 +137,16 @@ module.exports = {
         if (this.goUpgrade(creep)) {
             return 'goUpgrade';
         }
-        if (this.goWithdrawAny(creep)) {
-            return 'goWithdrawAny';
+        if (this.goWithdrawEnergy(creep)) {
+            return 'goWithdrawEnergy';
         }
 
         this.iAmLazyDog(creep);
         return false;
     },
     builderDo: function (creep) {
-        if (this.goWithdrawAny(creep)) {
-            return 'goWithdrawAny';
+        if (this.goWithdrawEnergy(creep)) {
+            return 'goWithdrawEnergy';
         }
         if (this.goFlagRally(creep, 'build')) {
             return 'goFlagRally';
@@ -160,7 +160,7 @@ module.exports = {
         if (this.goTakeResource(creep, 2)) {
             return 'goTakeResource';
         }
-        if (this.goFillLink(creep)) {
+        if (this.goFillSourceLink(creep)) {
             return 'goFillLink';
         }
         if (this.goStoreImportant(creep, 6)) {
@@ -222,9 +222,9 @@ module.exports = {
         creep.say('Go:' + flagName);
         return true;
     },
-    goFillLink: function (creep) {
-        const sourceLink = Game.getObjectById(constant.SOURCE_LINK);
-        if (creep.store[RESOURCE_ENERGY] < 1) {
+    goFillSourceLink: function (creep) {
+        const sourceLink = Game.getObjectById(structure.LINK_FROM_1);
+        if (creep.store[RESOURCE_ENERGY] < common.bodyPartCount(creep,WORK) * 1) {
             return false;
         }
         if (!sourceLink || sourceLink.store[RESOURCE_ENERGY] == sourceLink.store.getCapacity(RESOURCE_ENERGY)) {
@@ -297,7 +297,7 @@ module.exports = {
             creep.say('NO⛏️！');
 
             // 挖空了就先存一下 倒乾净口袋準備下一波
-            this.goStoreLink(creep, 1);
+            this.goStoreAny(creep, 1);
 
             return true;
         }
@@ -406,7 +406,7 @@ module.exports = {
 
         return false;
     },
-    goWithdrawAny: function (creep) {
+    goWithdrawEnergy: function (creep) {
         if (creep.store[RESOURCE_ENERGY] >= 1) {
             //有能量，不需要去提取能量
             return false;
@@ -453,8 +453,6 @@ module.exports = {
             creep.moveTo(target, { visualizePathStyle: { stroke: '#b88114' } });
             creep.say('🛠️' + target.structureType);
         }
-        this.goMove(creep, target);
-        // console.log(target);
         return true;
 
     },
@@ -538,13 +536,18 @@ module.exports = {
         }
         return false;
     },
-    goStoreLink: function (creep, range) {
+    goStoreAny: function (creep, range) {
         if (creep.store.getUsedCapacity() < 1) {
             return false;
         }
         const storeTargets = creep.pos.findInRange(FIND_STRUCTURES, range, {
             filter: (structure) => {
-                return ((structure.structureType == STRUCTURE_LINK) && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0)
+                return ((
+                    structure.structureType == STRUCTURE_CONTAINER
+                    || structure.structureType == STRUCTURE_STORAGE
+                    || structure.structureType == STRUCTURE_LINK
+                    || structure.structureType == STRUCTURE_EXTENSION
+                ) && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0)
             }
         });
 
@@ -565,12 +568,7 @@ module.exports = {
         }
         const storeTargets = creep.pos.findInRange(FIND_STRUCTURES, range, {
             filter: (structure) => {
-                return ((
-                    structure.structureType == STRUCTURE_CONTAINER
-                    || structure.structureType == STRUCTURE_STORAGE
-                    || structure.structureType == STRUCTURE_LINK
-                    || structure.structureType == STRUCTURE_EXTENSION
-                ) && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0)
+                return (structure.structureType == STRUCTURE_LINK && structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0)
             }
         });
 
@@ -704,7 +702,7 @@ module.exports = {
         creep.moveTo(targetPos, {
             visualizePathStyle: { stroke: '#66cdaa' }
         });
-        // creep.say(targetPos);
+        creep.say('➡️ ' + targetPos);
     },
     dontBlockTheSource: function (creep, target) {
         const distance = creep.pos.findInRange(FIND_SOURCES, 1);
