@@ -15,7 +15,7 @@ const common = require('./common');
 const creepManager = require('./creepManager');
 const structure = require('./structure');
 const CONTAINER_FROM_GROUP_IDs = ['65e0c8369cf7c4914b5873e0', '65e343696f0cfab7c352b9c3', '65e3edf1c3a96b31add8dd13'];
-const CONTAINER_TO_GROUP_IDs = ['65e0bc96713cf61f6156028b', '65e1e578372635ea22c045c0'];
+const CONTAINER_TO_GROUP_IDs = ['65e0bc96713cf61f6156028b', '65e1e578372635ea22c045c0','65e4ad60713cf6bcb156fe37'];
 
 
 module.exports = {
@@ -172,9 +172,10 @@ module.exports = {
         if (this.goBuild(creep, 6)) {
             return 'goBuild';
         }
-        if (this.goHaulContainers(creep, CONTAINER_FROM_GROUP_IDs, CONTAINER_TO_GROUP_IDs)) {
-            return 'goHaulContainers';
-        }
+        //小于5级时没有link，多余的energy得xiangzi平衡一下，帮upgrader节省点distance 
+        // if (this.goHaulContainers(creep, CONTAINER_FROM_GROUP_IDs, CONTAINER_TO_GROUP_IDs)) {
+        //     return 'goHaulContainers';
+        // }
         if (this.goWithdrawFromContainer(creep, 4)) {
             return 'goWithdrawFromContainer';
         }

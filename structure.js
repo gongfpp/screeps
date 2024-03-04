@@ -13,8 +13,8 @@ const LINK_TO_GROUP = [];
 module.exports = {
     isTowerAttack: true,
     towerAttackRange: 30,
-    LINK_FROM_1:'65e49a36b380eb0012da5440',
-    LINK_TO_1:'65e4976d9f26eb0012604b9b',
+    LINK_FROM_1:'65e4ad60713cf6bcb156fe37',
+    LINK_TO_1:'65e4c94b9cf7c411b7596d24',
     LINK_TO_2:'',
     
     structuresDo: function () {

@@ -45,10 +45,10 @@ const UPGRADER_BODYPART_1300 = [
   WORK, CARRY, CARRY, MOVE
 ];
 const UPGRADER_BODYPART_1600 = [
-  WORK, WORK, CARRY, MOVE,
-  WORK, WORK, CARRY, MOVE,
-  WORK, WORK, CARRY, MOVE,
-  WORK, WORK, CARRY, MOVE
+  WORK, WORK, WORK, CARRY, MOVE,MOVE,
+  WORK, WORK, WORK, CARRY, MOVE,MOVE,
+  WORK, WORK, WORK, CARRY, MOVE,
+  WORK, WORK, WORK, CARRY, MOVE
 ];
 const UPGRADER_BODYPART = [[], HAULER_BODYPART_300, HAULER_BODYPART_550, HAULER_BODYPART_800, UPGRADER_BODYPART_1300, UPGRADER_BODYPART_1600];
 
@@ -58,8 +58,8 @@ module.exports = {
   // baseSupporterMaxNum: 8,
   baseBuilderMaxNum: 0,
   upgraderMaxNum: 0,
-  upgraderFixIfNoBuilderExist: 3,
-
+  upgraderFixIfNoBuilderExist: 1,
+  creepLevel: 5,
   isStartUpEnergyThreshold: 800,
   generateCreeps: function () {
 
@@ -130,7 +130,7 @@ module.exports = {
         && constructionSites.length < 1
       )
     ) {
-      this.createCreep('upgrader', UPGRADER_BODYPART[4]);
+      this.createCreep('upgrader', UPGRADER_BODYPART[this.creepLevel]);
       return 'upgrader';
     }
 
@@ -204,7 +204,7 @@ module.exports = {
       return true;
     }
 
-    return false; 
+    return false;
   },
   clearDeadMemory: function () {
     for (var name in Memory.creeps) {
