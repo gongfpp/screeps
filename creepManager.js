@@ -45,8 +45,8 @@ const UPGRADER_BODYPART_1300 = [
   WORK, CARRY, CARRY, MOVE
 ];
 const UPGRADER_BODYPART_1600 = [
-  WORK, WORK, WORK, CARRY, MOVE,MOVE,
-  WORK, WORK, WORK, CARRY, MOVE,MOVE,
+  WORK, WORK, WORK, CARRY, MOVE, MOVE,
+  WORK, WORK, WORK, CARRY, MOVE, MOVE,
   WORK, WORK, WORK, CARRY, MOVE,
   WORK, WORK, WORK, CARRY, MOVE
 ];
@@ -121,25 +121,26 @@ module.exports = {
     }
 
     const constructionSites = Game.rooms[constant.TARGET_ROOM_ID].find(FIND_MY_CONSTRUCTION_SITES);
-
-    //upgrader
-    const upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-    if (upgraders.length < this.upgraderMaxNum
-      || (
-        (upgraders.length < this.upgraderMaxNum + this.upgraderFixIfNoBuilderExist)
-        && constructionSites.length < 1
-      )
-    ) {
-      this.createCreep('upgrader', UPGRADER_BODYPART[this.creepLevel]);
-      return 'upgrader';
-    }
-
     //builder
     const builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     if (constructionSites.length > 1 && builders.length < constant.BUILDER_MAX_NUM) {
       this.createCreep('builder', HAULER_BODYPART_800);
       return 'builder';
     }
+
+    //upgrader
+    const upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
+    if (upgraders.length < this.upgraderMaxNum
+      || (
+        (upgraders.length < this.upgraderMaxNum + this.upgraderFixIfNoBuilderExist)
+        && builders.length < 1
+      )
+    ) {
+      this.createCreep('upgrader', UPGRADER_BODYPART[this.creepLevel]);
+      return 'upgrader';
+    }
+
+
 
     //xiangzi
     const xiangzis = _.filter(Game.creeps, (creep) => creep.memory.role == 'xiangzi');

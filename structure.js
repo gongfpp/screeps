@@ -13,10 +13,10 @@ const LINK_TO_GROUP = [];
 module.exports = {
     isTowerAttack: true,
     towerAttackRange: 30,
-    LINK_FROM_1:'65e4ad60713cf6bcb156fe37',
-    LINK_TO_1:'65e4c94b9cf7c411b7596d24',
-    LINK_TO_2:'',
-    
+    LINK_FROM_1: '65e4ad60713cf6bcb156fe37',
+    LINK_TO_1: '65e4c94b9cf7c411b7596d24',
+    LINK_TO_2: '',
+
     structuresDo: function () {
         this.linkDo();
 
@@ -41,7 +41,7 @@ module.exports = {
         if (!sourceLink || !targetLink) {
             return false;
         }
-        
+
         if (sourceLink.store.getUsedCapacity(RESOURCE_ENERGY) === 0
             || sourceLink.store.getUsedCapacity(RESOURCE_ENERGY) < sourceLink.store.getFreeCapacity(RESOURCE_ENERGY)) {
             return false;

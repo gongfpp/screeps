@@ -20,13 +20,4 @@ module.exports = {
     //     , 'supporter' + Game.time
     //     , { memory: { role: 'supporter', targetRoomId: 'E54N51' } }),
 
-    // let harvestersPerSource = {};
-    // let sources = Game.spawns['Spawn1'].room.find(FIND_SOURCES);
-    // for(let s of sources) {
-    //     harvestersPerSource[s.id] = _.filter(Game.creeps, (c) => {
-    //         return c.memory.targetSourceId == s.id
-    //     }).length;
-    // }
-    //     console.log(JSON.stringify(sources));
-    // console.log(JSON.stringify(harvestersPerSource));
 };

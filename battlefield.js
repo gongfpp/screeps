@@ -57,17 +57,24 @@ module.exports = {
 
 
     },
+    //fight out 
     generateBattleCreeps: function () {
         if (!this.isFight) {
             return false;
         }
 
+        //attackers
         attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'attacker');
         if (attackers.length < this.attackerNum) {
 
         }
+
+        healers = _.filter(Game.creeps, (creep) => creep.memory.role == 'healer');
+
+        tankers = _.filter(Game.creeps, (creep) => creep.memory.role == 'tanker');
+        
     },
-    goAttackerFlag: function (creep, flagName) {
+    goFlag: function (creep, flagName) {
         const flag = Game.flags[flagName];
         if (!flag) {
             return false;
@@ -79,33 +86,16 @@ module.exports = {
         creep.say('Go:' + flagName);
         return true;
     },
-    createBattler: function (roleName) {
+    createBattler: function (roleName, bodyParts = [
+        TOUGH, ATTACK, MOVE,
+        TOUGH, ATTACK, MOVE,
+        TOUGH, ATTACK, MOVE
+    ]) {
         //cost 420
-        Game.spawns['Spawn1'].spawnCreep([
-            TOUGH, ATTACK, MOVE,
-            TOUGH, ATTACK, MOVE,
-            TOUGH, ATTACK, MOVE
-        ]
-            , roleName + Game.time
-            , {
-                memory: {
-                    role: roleName
-                }
-            });
+        return (Game.spawns['Spawn1'].spawnCreep(bodyParts, roleName + Game.time, { memory: { role: roleName } })) == OK;
     },
     createAttacker: function () {
-        //cost 420
-        Game.spawns['Spawn1'].spawnCreep([
-            TOUGH, ATTACK, MOVE,
-            TOUGH, ATTACK, MOVE,
-            TOUGH, ATTACK, MOVE
-        ]
-            , 'attacker' + Game.time
-            , {
-                memory: {
-                    role: 'attacker'
-                }
-            });
-    },
+        return this.createBattler('attacker');
+    }
 
 };
