@@ -115,7 +115,7 @@ module.exports = {
         // if (this.goFillSourceLink(creep)) {
         //     return 'goFillLink';
         // }
-        if (this.goStoreSpecialMine(creep, 30)) {
+        if (this.goStoreSpecialMine(creep, 50)) {
             return 'goStoreSpecialMine';
         }
         if (this.goBuild(creep, 5)) {
@@ -124,7 +124,7 @@ module.exports = {
         if (this.goRepairBelowRate(creep, 0.5)) {
             return 'goRepair';
         }
-        if (this.goTakeResource(creep, 20)) {
+        if (this.goTakeResource(creep, 50)) {
             return 'goTakeResource';
         }
         if (this.goUpgrade(creep)) {
@@ -241,7 +241,7 @@ module.exports = {
         if (creep.store[RESOURCE_ENERGY] < common.bodyPartCount(creep, WORK) * 1) {
             return false;
         }
-        if (!sourceLink || sourceLink.store[RESOURCE_ENERGY] > sourceLink.store.getCapacity(RESOURCE_ENERGY) * 0.3) {
+        if (!sourceLink || sourceLink.store[RESOURCE_ENERGY] > sourceLink.store.getCapacity(RESOURCE_ENERGY) * 0.4) {
             return false;
         }
 
@@ -707,13 +707,34 @@ module.exports = {
             creep.say('drops!');
             return true;
         }
-        const tombstones = creep.pos.findInRange(FIND_TOMBSTONES, range, { filter: (t) => t.store[RESOURCE_ENERGY] > 20 });
+        const tombstones = creep.pos.findInRange(FIND_TOMBSTONES, range,
+            { filter: (t) => _.sum(t.store) > t.store[RESOURCE_ENERGY] || t.store[RESOURCE_ENERGY] > 20 });
         if (tombstones.length > 0) {
-            if (creep.withdraw(tombstones[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(tombstones[0], { visualizePathStyle: { stroke: '#ff0000' } });
+            const tombstone = tombstones[0];
+            // 检查墓碑中的资源类型，优先拾取非能量资源
+            for (const resourceType in tombstone.store) {
+                if (resourceType !== RESOURCE_ENERGY) {
+                    // 优先拾取特殊矿石
+                    if (creep.withdraw(tombstone, resourceType) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(tombstone, { visualizePathStyle: { stroke: '#ff0000' } });
+                        console.log(`Creep ${creep.name} is picking up ${resourceType} from a tombstone.`);
+                        return true;
+                    }
+                }
             }
-            creep.say('tombstone!');
-            return true;
+            // 如果特殊矿石已经被拾取完毕，或墓碑中只有能量，那么拾取能量
+            if (tombstone.store[RESOURCE_ENERGY] > 0) {
+                if (creep.withdraw(tombstone, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(tombstone, { visualizePathStyle: { stroke: '#ff0000' } });
+                    console.log(`Creep ${creep.name} is picking up energy from a tombstone.`);
+                    return true;
+                }
+            }
+            // if (creep.withdraw(tombstones[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            //     creep.moveTo(tombstones[0], { visualizePathStyle: { stroke: '#ff0000' } });
+            // }
+            // creep.say('tombstone!');
+            // return true;
         }
 
         var ruins = creep.pos.findInRange(FIND_RUINS, range, { filter: (ruin) => ruin.store[RESOURCE_ENERGY] > 20 });

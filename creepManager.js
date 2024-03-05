@@ -117,7 +117,7 @@ module.exports = {
     //supporter
     const supporters = _.filter(Game.creeps, (creep) => creep.memory.role == 'supporter');
     if (supporters.length < constant.SUPPORTER_MAX_NUM) {
-      this.createCreep('supporter', HAULER_BODYPART_550);
+      this.createCreep('supporter', HAULER_BODYPART_800);
       return 'supporter';
     }
 
