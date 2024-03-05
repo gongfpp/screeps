@@ -21,7 +21,7 @@ module.exports = {
             const energyInfo = `能量: ${room.energyAvailable}/${room.energyCapacityAvailable}`;
             const constructionSitesCount = `建筑工地数量: ${room.find(FIND_MY_CONSTRUCTION_SITES).length}`;
             const controllerInfo = `控制器等级: ${room.controller ? room.controller.level : 'N/A'}`;
-            const controllerProgress = `控制器升级进度: ${room.controller.progress}/${room.controller.progressTotal}`;
+            const controllerProgress = `控制器升级进度: ${((room.controller.progress / room.controller.progressTotal) * 100).toFixed(2)}% : ${room.controller.progress}/${room.controller.progressTotal}`;
 
             // Creep 信息
             const creeps = room.find(FIND_MY_CREEPS);
@@ -31,7 +31,7 @@ module.exports = {
                 return acc;
             }, {});
             const creepInfo = `Creep 数量: ${creeps.length} : ${JSON.stringify(creepTypesCount)}`;
-            const creepTTL = creeps.map(creep => `${creep.name} TTL: ${creep.ticksToLive}`).join(", ");
+            const creepTTL = creeps.map(creep => `${creep.memory.role} TTL: ${creep.ticksToLive}`).join(", ");
 
             // 防御信息
             const towers = room.find(FIND_MY_STRUCTURES, { filter: { structureType: STRUCTURE_TOWER } });
@@ -61,9 +61,9 @@ module.exports = {
             ${controllerInfo}
             ${controllerProgress}
             ${creepInfo}
-            Creep 生命时间: ${creepTTL}
+            ${creepTTL}
             ${towerEnergyInfo ? `防御塔信息: ${towerEnergyInfo}` : ''}
-            容器信息: ${containerInfo}
+            ${containerInfo}
             ${enemyInfo}
             ${sourceInfo}
         `);
