@@ -179,7 +179,7 @@ module.exports = {
         if (this.goRepairRanged(creep, 3)) {
             return 'goRepairRanged';
         }
-        if (this.goFillSourceLink(creep)) {
+        if (this.goFillSourceLink(creep,0.8)) {
             return 'goFillLink';
         }
         if (this.goBuild(creep, 6)) {
@@ -236,12 +236,12 @@ module.exports = {
         creep.say('Go:' + flagName);
         return true;
     },
-    goFillSourceLink: function (creep) {
+    goFillSourceLink: function (creep,belowRate) {
         const sourceLink = Game.getObjectById(structure.LINK_FROM_1);
         if (creep.store[RESOURCE_ENERGY] < common.bodyPartCount(creep, WORK) * 1) {
             return false;
         }
-        if (!sourceLink || sourceLink.store[RESOURCE_ENERGY] > sourceLink.store.getCapacity(RESOURCE_ENERGY) * 0.4) {
+        if (!sourceLink || sourceLink.store[RESOURCE_ENERGY] > sourceLink.store.getCapacity(RESOURCE_ENERGY) * belowRate) {
             return false;
         }
 
