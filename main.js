@@ -20,18 +20,21 @@ module.exports.loop = function () {
     // 存特殊礦
     // 佔基地creep
     // 拿下隔壁
-    // 災后重建harvester改造
-    // 建築自動平衡優化
 
     func();
+
+    elegant.creepsDo();
+    
     created = creepManager.generateCreeps();
-    if(created){
-        console.log('created :'+created);
+    if (created) {
+        console.log('created :' + created);
     }
     creepManager.clearDeadMemory();
-    elegant.creepsDo();
+
     struct.structuresDo();
+    
     battle.battleDo();
+    
     common.periodCheck();
 
 }

@@ -106,23 +106,29 @@ module.exports = {
         return false;
     },
     supporterDo: function (creep) {
-        if (this.goStoreImportant(creep, 10)) {
+        if (this.goStoreImportant(creep, 30)) {
             return 'goStoreExtensions';
         }
         if (this.goRepairRanged(creep, 3)) {
             return 'goRepairRanged';
         }
+        // if (this.goFillSourceLink(creep)) {
+        //     return 'goFillLink';
+        // }
+        if (this.goStoreSpecialMine(creep, 30)) {
+            return 'goStoreSpecialMine';
+        }
         if (this.goBuild(creep, 5)) {
             return 'goBuild';
         }
-        if (this.goRepairBelowRate(creep, 0.8)) {
+        if (this.goRepairBelowRate(creep, 0.5)) {
             return 'goRepair';
-        }
-        if (this.goUpgrade(creep)) {
-            return 'goUpgrade';
         }
         if (this.goTakeResource(creep, 20)) {
             return 'goTakeResource';
+        }
+        if (this.goUpgrade(creep)) {
+            return 'goUpgrade';
         }
         if (this.goWithdrawAny(creep)) {
             return 'goWithdrawAny';
@@ -140,7 +146,7 @@ module.exports = {
         if (this.goUpgrade(creep)) {
             return 'goUpgrade';
         }
-        if (this.goTakeResource(creep,3)){
+        if (this.goTakeResource(creep, 3)) {
             return 'goTakeResource3';
         }
         if (this.goWithdrawAny(creep)) {
@@ -166,7 +172,7 @@ module.exports = {
         if (this.goTakeResource(creep, 2)) {
             return 'goTakeResource';
         }
-        
+
         if (this.goStoreImportant(creep, 6)) {
             return 'goStoreExtensions';
         }
@@ -235,7 +241,7 @@ module.exports = {
         if (creep.store[RESOURCE_ENERGY] < common.bodyPartCount(creep, WORK) * 1) {
             return false;
         }
-        if (!sourceLink || sourceLink.store[RESOURCE_ENERGY] == sourceLink.store.getCapacity(RESOURCE_ENERGY)) {
+        if (!sourceLink || sourceLink.store[RESOURCE_ENERGY] > sourceLink.store.getCapacity(RESOURCE_ENERGY) * 0.3) {
             return false;
         }
 
@@ -440,7 +446,31 @@ module.exports = {
         }
         return false;
     },
+    goWithdrawAnyButLink: function (creep) {
+        if (creep.store[RESOURCE_ENERGY] >= 1) {
+            //有能量，不需要去提取能量
+            return false;
+        }
 
+        // 寻找最近的容器或存储
+        const source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return (structure.structureType == STRUCTURE_CONTAINER
+                    || structure.structureType == STRUCTURE_STORAGE) &&
+                    structure.store.getUsedCapacity(RESOURCE_ENERGY) > creep.store.getFreeCapacity(RESOURCE_ENERGY) * 0.8;
+            }
+        });
+        if (source) {
+            // 从容器或存储中提取能量
+            if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(source, { visualizePathStyle: { stroke: '#ff5100' } });
+                creep.say('Get E');
+
+            }
+            return true;
+        }
+        return false;
+    },
     goBuild: function (creep, range) {
         if (creep.store.getUsedCapacity() < 1) {
             return false;
@@ -468,18 +498,21 @@ module.exports = {
         if (creep.store.getUsedCapacity() < 1) {
             return false;
         }
-        const target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: (s) => (s.structureType == STRUCTURE_ROAD
-                || s.structureType == STRUCTURE_CONTAINER
-                || s.structureType == STRUCTURE_STORAGE
-                || s.structureType == STRUCTURE_TOWER
-                || s.structureType == STRUCTURE_STORAGE
-                // || s.structureType == STRUCTURE_WALL
-            ) && s.hits < s.hitsMax * rate
-        });
+        var target = Game.getObjectById(creep.memory.repairTarget);
+        if (!target || target.hits == target.hitsMax) {
+            target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (s) => (s.structureType == STRUCTURE_ROAD
+                    || s.structureType == STRUCTURE_CONTAINER
+                    || s.structureType == STRUCTURE_STORAGE
+                    || s.structureType == STRUCTURE_TOWER
+                ) && s.hits < s.hitsMax * rate
+            });
+        }
+
         if (!target) {
             return false;
         }
+        creep.memory.repairTarget = target;
         this.dontBlockTheSource(creep, target);
         if (creep.repair(target) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, { visualizePathStyle: { stroke: '#e63995' } });
@@ -513,7 +546,7 @@ module.exports = {
             creep.say('repair:' + range);
             return true;
         }
-        creep.say('Ring!');
+        // creep.say('Ring!');
         // return true;
 
         return false;
@@ -543,6 +576,27 @@ module.exports = {
             return true;
         }
         return false;
+    },
+    goStoreSpecialMine: function (creep, range) {
+        // 检查是否携带了除了能量之外的资源
+        for (const resourceType in creep.carry) {
+            if (resourceType !== RESOURCE_ENERGY) {
+                // 找到合适的存储设施
+                var storage = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+                    filter: (s) => s.structureType === STRUCTURE_STORAGE || s.structureType === STRUCTURE_TERMINAL
+                });
+
+                if (storage) {
+                    // 尝试转移资源，如果不在范围内，则移动过去
+                    if (creep.transfer(storage, resourceType) === ERR_NOT_IN_RANGE) {
+                        creep.moveTo(storage);
+                    }
+                    creep.say('Sto Mine');
+                    return true; // 返回 true 表示执行了资源转移
+                }
+            }
+        }
+        return false; // 返回 false 表示没有执行资源转移，可以进行其他任务
     },
     goStoreAny: function (creep, range) {
         if (creep.store.getUsedCapacity() < 1) {
@@ -702,8 +756,8 @@ module.exports = {
             return true;
         }
 
-        console.log('Upgrade Failed ：' + creep.upgradeController(creep.room.controller));
-        creep.say('Upgrade G!');
+        console.log('Upgrader upgrade Failed ：' + ret);
+        // creep.say('Up G!'); 
         return false;
     },
     goMove: function (creep, targetPos) {

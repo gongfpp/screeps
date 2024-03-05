@@ -45,10 +45,10 @@ const UPGRADER_BODYPART_1300 = [
   WORK, CARRY, CARRY, MOVE
 ];
 const UPGRADER_BODYPART_1600 = [
-  WORK, WORK, WORK, CARRY, MOVE, MOVE,
-  WORK, WORK, WORK, CARRY, MOVE, MOVE,
+  WORK, WORK, WORK, CARRY, MOVE, 
+  WORK, WORK, WORK, CARRY, MOVE, 
   WORK, WORK, WORK, CARRY, MOVE,
-  WORK, WORK, WORK, CARRY, MOVE
+  WORK, WORK, WORK, CARRY
 ];
 const UPGRADER_BODYPART = [[], HAULER_BODYPART_300, HAULER_BODYPART_550, HAULER_BODYPART_800, UPGRADER_BODYPART_1300, UPGRADER_BODYPART_1600];
 
@@ -58,6 +58,7 @@ module.exports = {
   // baseSupporterMaxNum: 8,
   baseBuilderMaxNum: 0,
   upgraderMaxNum: 0,
+  xiangziMaxNum:1,
   upgraderFixIfNoBuilderExist: 1,
   creepLevel: 5,
   isStartUpEnergyThreshold: 800,
@@ -144,7 +145,7 @@ module.exports = {
 
     //xiangzi
     const xiangzis = _.filter(Game.creeps, (creep) => creep.memory.role == 'xiangzi');
-    if (xiangzis.length < constant.XIANGZI_MAX_NUM && constant.IS_HOME_PEACE) {
+    if (xiangzis.length < this.xiangziMaxNum && constant.IS_HOME_PEACE) {
       this.createCreep('xiangzi', HAULER_BODYPART_800);
       return 'xiangzi';
     }

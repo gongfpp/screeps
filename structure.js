@@ -53,12 +53,12 @@ module.exports = {
 
 
         if (targetLinkEnergy < targetLink2Energy) {
-            if (targetLink && targetLink.store.getFreeCapacity(RESOURCE_ENERGY) > 99) {
+            if (targetLink && targetLink.store.getUsedCapacity(RESOURCE_ENERGY) < 400) {
                 sourceLink.transferEnergy(targetLink);
                 return true;
             }
         } else {
-            if (targetLink2 && targetLink2.store.getFreeCapacity(RESOURCE_ENERGY) > 99) {
+            if (targetLink2 && targetLink2.store.getUsedCapacity(RESOURCE_ENERGY) < 400) {
                 sourceLink.transferEnergy(targetLink2);
                 return true;
             }
