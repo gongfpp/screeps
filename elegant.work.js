@@ -670,7 +670,7 @@ module.exports = {
         return false;
     },
     pickupByChance: function (creep) {
-        if (creep.store.getFreeCapacity() < 10) {
+        if (creep.store.getFreeCapacity() < creep.store.getCapacity() * 0.2) {
             return false;
         }
         var droppedResources = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 1);
