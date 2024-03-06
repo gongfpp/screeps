@@ -121,7 +121,7 @@ module.exports = {
         if (this.goBuild(creep, 5)) {
             return 'goBuild';
         }
-        if (this.goRepairBelowRate(creep, 0.5)) {
+        if (this.goRepairBelowRate(creep, 0.6)) {
             return 'goRepair';
         }
         if (this.goTakeResource(creep, 50)) {
@@ -137,9 +137,9 @@ module.exports = {
         return false;
     },
     upgraderDo: function (creep) {
-        if (this.goStoreImportant(creep, 2)) {
-            return 'goStoreExtensions';
-        }
+        // if (this.goStoreImportant(creep, 2)) {
+        //     return 'goStoreExtensions';
+        // }
         if (this.goRepairRanged(creep, 3)) {
             return 'goRepairRanged';
         }
@@ -512,7 +512,7 @@ module.exports = {
         if (!target) {
             return false;
         }
-        creep.memory.repairTarget = target;
+        creep.memory.repairTarget = target.id;
         this.dontBlockTheSource(creep, target);
         if (creep.repair(target) == ERR_NOT_IN_RANGE) {
             creep.moveTo(target, { visualizePathStyle: { stroke: '#e63995' } });
@@ -748,16 +748,16 @@ module.exports = {
 
         return false;
     },
-    goGenerateSafeMode: function (creep) {
-        if (creep.room.controller.safeModeAvailable > constant.SAFE_MODE_COUNT) {
-            return false;
-        }
-        if (creep.generateSafeMode(creep.room.controller) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
-        }
-        creep.say('🛐' + 'Safe Me!');
-        return true;
-    },
+    // goGenerateSafeMode: function (creep) {
+    //     if (creep.room.controller.safeModeAvailable > constant.SAFE_MODE_COUNT) {
+    //         return false;
+    //     }
+    //     if (creep.generateSafeMode(creep.room.controller) == ERR_NOT_IN_RANGE) {
+    //         creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
+    //     }
+    //     creep.say('🛐' + 'Safe Me!');
+    //     return true;
+    // },
     goUpgrade: function (creep) {
         if (creep.store.getUsedCapacity() < 1) {
             return false;
