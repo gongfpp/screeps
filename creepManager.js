@@ -61,7 +61,7 @@ module.exports = {
   // baseHarvestersMaxNum: 9,
   // baseSupporterMaxNum: 8,
   baseBuilderMaxNum: 0,
-  upgraderMaxNum: 0,
+  upgraderMaxNum: 1,
   xiangziMaxNum:1,
   upgraderFixIfNoBuilderExist: 1,
   creepLevel: 5,
