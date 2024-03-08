@@ -41,7 +41,7 @@ module.exports = {
                 this.builderDo(creep);
             } else if (creep.memory.role == 'xiangzi') {
                 did = this.xiangziDo(creep);
-                // console.log(`${creep.name} do ${did}`);
+                console.log(`${creep.name} do ${did}`);
             } else if (creep.memory.role == 'attacker') {
                 this.attackerDo(creep);
             } else if (creep.memory.role == 'defender') {
@@ -172,17 +172,16 @@ module.exports = {
         if (this.goTakeResource(creep, 2)) {
             return 'goTakeResource';
         }
-
         if (this.goStoreImportant(creep, 6)) {
             return 'goStoreExtensions';
         }
         if (this.goRepairRanged(creep, 3)) {
             return 'goRepairRanged';
         }
-        if (this.goFillSourceLink(creep,0.8)) {
+        if (this.goFillSourceLink(creep, 0.8)) {
             return 'goFillLink';
         }
-        if (this.goBuild(creep, 6)) {
+        if (this.goBuild(creep, 8)) {
             return 'goBuild';
         }
         //小于5级时没有link，启用，多余的energy得xiangzi平衡一下，帮upgrader节省点distance 的cost
@@ -203,6 +202,7 @@ module.exports = {
         }
 
         this.iAmLazyDog(creep);
+        return 'iAmLazyDog';
         // return this.upgraderDo(creep);
 
     },
@@ -236,24 +236,30 @@ module.exports = {
         creep.say('Go:' + flagName);
         return true;
     },
-    goFillSourceLink: function (creep,belowRate) {
-        const sourceLink = Game.getObjectById(structure.LINK_FROM_1);
-        if (creep.store[RESOURCE_ENERGY] < common.bodyPartCount(creep, WORK) * 1) {
+    goFillSourceLink: function (creep, belowRate) {
+        // var tar = Game.getObjectById(structure.LINK_FROM_2);
+        var tar = Game.getObjectById(creep.memory.fillSourceLinkTargetId)
+        if (tar) {
+            if (tar.store[RESOURCE_ENERGY] > tar.store.getCapacity(RESOURCE_ENERGY) * belowRate) {
+                creep.memory.fillSourceLinkTargetId = null;
+            } else if (creep.store[RESOURCE_ENERGY] > 0 && creep.transfer(tar, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(tar, { visualizePathStyle: { stroke: '#d174a8' } });
+                creep.say('Link!');
+                return true;
+            }
             return false;
         }
-        if (!sourceLink || sourceLink.store[RESOURCE_ENERGY] > sourceLink.store.getCapacity(RESOURCE_ENERGY) * belowRate) {
-            return false;
-        }
+        structure.LINK_FROM_GROUP.map(linkName => {
+            const sourceLink = Game.getObjectById(linkName);
+            if (creep.store[RESOURCE_ENERGY] > common.bodyPartCount(creep, WORK) * 1
+                && sourceLink.store[RESOURCE_ENERGY] < sourceLink.store.getCapacity(RESOURCE_ENERGY) * belowRate) {
+                creep.memory.fillSourceLinkTargetId = sourceLink.id;
+                tar = sourceLink;
+                return false;
+            }
+        })
 
-        if (creep.transfer(sourceLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(sourceLink, { visualizePathStyle: { stroke: '#d174a8' } });
-            creep.say('Link!');
-            return true;
-        }
-
-        // creep.say('Link but '+)
-        return true;
-        // return 'transfer failed :'+creep.transfer(sourceLink, RESOURCE_ENERGY);
+        return false;
     },
     // goWithdrawFromTargetLink: function (creep) {
     //     // 检查 Creep 的能量状态   TODO put it swap goHarvest();
@@ -768,11 +774,11 @@ module.exports = {
             creep.say('Up');
             return true;
         } else if (ret == OK) {
-            if (creep.pos.findInRange(creep.room.controller, 2).length == 0) {
-                creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
-            }
+            // if (creep.pos.findInRange(creep.room.controller, 4).length == 0) {
+            creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
+            // }
 
-            this.dontBlockTheSource(creep, creep.room.controller);
+            // this.dontBlockTheSource(creep, creep.room.controller);
             // this.dontBlockTheRoad(creep, creep.room.controller);
             return true;
         }

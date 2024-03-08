@@ -49,23 +49,38 @@ const UPGRADER_BODYPART_1300 = [
   WORK, CARRY, CARRY, MOVE
 ];
 const UPGRADER_BODYPART_1600 = [
-  WORK, WORK, WORK, CARRY, MOVE, 
-  WORK, WORK, WORK, CARRY, MOVE, 
+  WORK, WORK, WORK, CARRY, MOVE,
+  WORK, WORK, WORK, CARRY, MOVE,
   WORK, WORK, WORK, CARRY, MOVE,
   WORK, WORK, WORK, CARRY
 ];
-const UPGRADER_BODYPART = [[], HAULER_BODYPART_300, HAULER_BODYPART_550, HAULER_BODYPART_800, UPGRADER_BODYPART_1300, UPGRADER_BODYPART_1600];
+
+const UPGRADER_BODYPART_2200 = [
+  WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE,
+  WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE,
+  WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE,
+  WORK, WORK, WORK, WORK, CARRY
+];
+const UPGRADER_BODYPART = [
+  [], HAULER_BODYPART_300
+  , HAULER_BODYPART_550
+  , HAULER_BODYPART_800
+  , UPGRADER_BODYPART_1300
+  , UPGRADER_BODYPART_1600
+  , UPGRADER_BODYPART_2200];
 
 module.exports = {
   isStartUp: false,
   // baseHarvestersMaxNum: 9,
   // baseSupporterMaxNum: 8,
   baseBuilderMaxNum: 0,
-  upgraderMaxNum: 1,
-  xiangziMaxNum:1,
+  upgraderMaxNum: 0,
+  xiangziMaxNum: 1,
   upgraderFixIfNoBuilderExist: 1,
-  creepLevel: 5,
+  upgraderFixIfStorageHalfFull: 1,
+  creepLevel: 6,
   isStartUpEnergyThreshold: 800,
+
   generateCreeps: function () {
 
     const creeps = _.filter(Game.creeps);
@@ -138,8 +153,9 @@ module.exports = {
     if (upgraders.length < this.upgraderMaxNum
       || (
         (upgraders.length < this.upgraderMaxNum + this.upgraderFixIfNoBuilderExist)
-        && builders.length < 1
-      )
+        && builders.length < 1)
+      // || (upgraders.length < this.upgraderMaxNum + this.upgraderFixIfStorageHalfFull)
+      // && (Gam))
     ) {
       this.createCreep('upgrader', UPGRADER_BODYPART[this.creepLevel]);
       return 'upgrader';

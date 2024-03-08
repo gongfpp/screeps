@@ -7,16 +7,18 @@
  * mod.thing == 'a thing'; // true
  */
 var constant = require('constant');
-const LINK_FROM_GROUP = [];
-const LINK_TO_GROUP = [];
+// const LINK_FROM_GROUP = ['65e4ad60713cf6bcb156fe37', '65e9eceeee764b8102cda64c'];
+// const LINK_TO_GROUP = ['65e4c94b9cf7c411b7596d24'];
 
 module.exports = {
     isTowerAttack: true,
     towerAttackRange: 25,
     LINK_FROM_1: '65e4ad60713cf6bcb156fe37',
+    LINK_FROM_2: '65e9eceeee764b8102cda64c',
     LINK_TO_1: '65e4c94b9cf7c411b7596d24',
     LINK_TO_2: '',
-
+    LINK_FROM_GROUP: ['65e4ad60713cf6bcb156fe37', '65e9eceeee764b8102cda64c'],
+    LINK_TO_GROUP: ['65e4c94b9cf7c411b7596d24'],
     structuresDo: function () {
         this.linkDo();
 
@@ -34,35 +36,18 @@ module.exports = {
         // }
     },
     linkDo: function () {
-        const sourceLink = Game.getObjectById(this.LINK_FROM_1);
-        const targetLink = Game.getObjectById(this.LINK_TO_1);
-        const targetLink2 = Game.getObjectById(this.LINK_TO_2);
-
-        if (!sourceLink || !targetLink) {
-            return false;
-        }
-
-        if (sourceLink.store.getUsedCapacity(RESOURCE_ENERGY) === 0
-            || sourceLink.store.getUsedCapacity(RESOURCE_ENERGY) < sourceLink.store.getFreeCapacity(RESOURCE_ENERGY)) {
-            return false;
-        }
-
-
-        let targetLinkEnergy = targetLink ? targetLink.store.getUsedCapacity(RESOURCE_ENERGY) : Infinity;
-        let targetLink2Energy = targetLink2 ? targetLink2.store.getUsedCapacity(RESOURCE_ENERGY) : Infinity;
-
-
-        if (targetLinkEnergy < targetLink2Energy) {
-            if (targetLink && targetLink.store.getUsedCapacity(RESOURCE_ENERGY) < 400) {
-                sourceLink.transferEnergy(targetLink);
-                return true;
+        this.LINK_FROM_GROUP.map(sourceLinkName => {
+            sourceLink = Game.getObjectById(sourceLinkName);
+            if (sourceLink.store.getUsedCapacity(RESOURCE_ENERGY) > sourceLink.store.getFreeCapacity(RESOURCE_ENERGY)) {
+                this.LINK_TO_GROUP.map(targetLinkName => {
+                    targetLink = Game.getObjectById(targetLinkName);
+                    if (targetLink.store.getUsedCapacity(RESOURCE_ENERGY) < 400) {
+                        sourceLink.transferEnergy(targetLink);
+                        return true;
+                    }
+                })
             }
-        } else {
-            if (targetLink2 && targetLink2.store.getUsedCapacity(RESOURCE_ENERGY) < 400) {
-                sourceLink.transferEnergy(targetLink2);
-                return true;
-            }
-        }
+        });
 
         return false;
     },
