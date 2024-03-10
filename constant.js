@@ -8,14 +8,15 @@
  */
 
 module.exports = {
+    ROOM_GROUPS_ID: ['W3N33'],
     STORE_PRIORITY: [
-        STRUCTURE_SPAWN,         // 孵化器具有最高优先级
-        STRUCTURE_EXTENSION,     // 然后是扩展
-        STRUCTURE_TOWER,         // 防御塔次之
-        STRUCTURE_STORAGE,       // 存储设施之后
-        STRUCTURE_CONTAINER,     // 容器排在存储设施之后
-        STRUCTURE_TERMINAL,      // 终端通常用于市场交易，优先级较低
-        STRUCTURE_LINK           // 链接最后，通常用于远程传输能量
+        STRUCTURE_SPAWN,    
+        STRUCTURE_EXTENSION,
+        STRUCTURE_TOWER,    
+        STRUCTURE_STORAGE,  
+        STRUCTURE_CONTAINER,
+        STRUCTURE_TERMINAL, 
+        STRUCTURE_LINK      
     ],
     REPAIR_PRIORITY: {
         [STRUCTURE_TOWER]: 1,
@@ -44,6 +45,7 @@ module.exports = {
     SUPPORTER_REPAIR_RANGE: 2,
     //ROOM:
     TARGET_ROOM_ID: 'W2N33',
+    HOME_ROOM_ID: 'W2N33',
     SPAWN_HOME: 'Spawn1',
     //SOUCE:
     SOURCE_ID_1: '',

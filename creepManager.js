@@ -27,12 +27,15 @@ const HARVESTER_BODYPART_800 = [
   CARRY,
   MOVE, MOVE, MOVE
 ];
-const HARVESTER_BODYPART_1300 = [
+const HARVESTER_BODYPART_KING = [
+  //1300
   WORK, WORK, WORK, WORK, WORK, WORK,
   CARRY, CARRY,
   MOVE, MOVE, MOVE
 ];
-const HARVESTER_BODYPART = [[], HARVESTER_BODYPART_300, HARVESTER_BODYPART_550, HARVESTER_BODYPART_800, HARVESTER_BODYPART_1300];
+const HARVESTER_BODYPART = [[]
+  , HARVESTER_BODYPART_300, HARVESTER_BODYPART_550, HARVESTER_BODYPART_800
+  , HARVESTER_BODYPART_KING, HARVESTER_BODYPART_KING, HARVESTER_BODYPART_KING];
 
 const HAULER_BODYPART_300 = [WORK, CARRY, CARRY, MOVE, MOVE];
 const HAULER_BODYPART_550 = [WORK, WORK, CARRY, CARRY, MOVE, MOVE];
@@ -69,15 +72,34 @@ const UPGRADER_BODYPART = [
   , UPGRADER_BODYPART_1600
   , UPGRADER_BODYPART_2200];
 
+const SUPPORTER_KING = [
+  //800
+  WORK, CARRY, MOVE,
+  WORK, CARRY, MOVE,
+  WORK, CARRY, MOVE,
+  WORK, CARRY, MOVE];
+
+const SUPPORTER_BODYPART = [
+  [], HAULER_BODYPART_300
+  , HAULER_BODYPART_550
+  , HAULER_BODYPART_800
+  , SUPPORTER_KING
+  , SUPPORTER_KING
+  , SUPPORTER_KING];
+
 module.exports = {
+  sourcesIdGroup: SOURCE_ID_GROUP,
   isStartUp: false,
   // baseHarvestersMaxNum: 9,
   // baseSupporterMaxNum: 8,
   baseBuilderMaxNum: 0,
   upgraderMaxNum: 0,
   xiangziMaxNum: 1,
+  minerMaxNum: 0,
+  // claimerMaxNum: 0,
+  claimerMaxNum: constant.ROOM_GROUPS_ID.length,
   upgraderFixIfNoBuilderExist: 1,
-  upgraderFixIfStorageHalfFull: 1,
+  upgraderFixIfStorageHalfFull: 0,
   creepLevel: 6,
   isStartUpEnergyThreshold: 800,
 
@@ -129,14 +151,14 @@ module.exports = {
     //harvester
     const harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
     if (harvesters.length < constant.HAVERSTER_MAX_NUM) {
-      ret = this.createHarvesterCreep(HARVESTER_BODYPART[4], 'harvester');
+      ret = this.createHarvesterCreep(HARVESTER_BODYPART[this.creepLevel], 'harvester');
       return ret == OK ? 'harvester' : false;
     }
 
     //supporter
     const supporters = _.filter(Game.creeps, (creep) => creep.memory.role == 'supporter');
     if (supporters.length < constant.SUPPORTER_MAX_NUM) {
-      this.createCreep('supporter', HAULER_BODYPART_800);
+      this.createCreep('supporter', SUPPORTER_BODYPART[this.creepLevel]);
       return 'supporter';
     }
 
@@ -174,6 +196,20 @@ module.exports = {
       constant.IS_HOME_PEACE = true;
     }
 
+
+    //miner
+    const miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner');
+    if (miners.length < this.minerMaxNum && constant.IS_HOME_PEACE) {
+      //todo 
+    }
+
+
+    const claimers = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer');
+    if (claimers.length < this.claimerMaxNum && constant.IS_HOME_PEACE) {
+      this.createClaimerCreep('claimer', [CLAIM, CLAIM, MOVE, MOVE]);
+      return 'claimer';
+    }
+
     return false;
   },
   createCreep(roleName, bodyParts) {
@@ -184,7 +220,35 @@ module.exports = {
     if (ret == OK) {
       return true;
     }
-    console.log(`create ${roleName} failed , ret = ${ret}`);
+    // console.log(`create ${roleName} failed , ret = ${ret}`);
+    return false;
+  },
+  createClaimerCreep: function (roleName, bodyParts) {
+    // let claimerPerRoom = {};
+
+    // const rooms = constant.ROOM_GROUPS_ID.map(id => Game.rooms[id]);
+    // console.log(JSON.stringify(rooms));
+    // for (let room of rooms) {
+    //   claimerPerRoom[room.id] = _.filter(Game.creeps, c => c.memory.targetClaimRoomId == room.id).length;
+    // }
+    // let targetClaimRoomId = rooms[0].id;
+    // let targetRoomClaimerNum = Infinity;
+
+    // for (let roomId in claimerPerRoom) {
+    //   if (claimerPerRoom[roomId] < targetRoomClaimerNum) {
+    //     targetRoomClaimerNum = claimerPerRoom[roomId];
+    //     targetClaimRoomId = roomId;
+    //   }
+    // }
+
+    ret = Game.spawns[constant.SPAWN_HOME].spawnCreep(
+      bodyParts
+      , roleName + Game.time
+      , { memory: { role: roleName } });
+    if (ret == OK) {
+      return true;
+    }
+    // console.log(`create ${roleName} failed , ret = ${ret}`);
     return false;
   },
   createHarvesterCreep: function (bodyParts, harvesterRole) {
@@ -193,7 +257,9 @@ module.exports = {
       return false;
     }
     let harvestersPerSource = {};
+    // let sources = this.sourcesIdGroup;
     let sources = Game.spawns[constant.SPAWN_HOME].room.find(FIND_SOURCES);
+
     for (let s of sources) {
       harvestersPerSource[s.id] = _.filter(Game.creeps, (c) => {
         return c.memory.targetSourceId == s.id
@@ -227,6 +293,46 @@ module.exports = {
     }
 
     return false;
+  },
+  createMinerCreep: function (bodyParts) {
+    //todo
+
+    // let harvestersPerSource = {};
+    // const rooms = constant.ROOM_GROUPS_ID.map()
+    // let sources = Game.spawns[constant.SPAWN_HOME].room.find(FIND_SOURCES);
+    // for (let s of sources) {
+    //   harvestersPerSource[s.id] = _.filter(Game.creeps, (c) => {
+    //     return c.memory.targetSourceId == s.id
+    //   }).length;
+    // }
+    // let targetSourceId = sources[0].id;
+    // let targetSourceWorkerNum = Infinity;
+
+    // for (let sourceId in harvestersPerSource) {
+    //   if (harvestersPerSource[sourceId] < targetSourceWorkerNum) {
+    //     targetSourceWorkerNum = harvestersPerSource[sourceId];
+    //     targetSourceId = sourceId;
+    //   }
+    // }
+
+    // if (harvesterRole == 'baseHarvester') {
+    //   if (harvestersPerSource[SOURCE_1_ID] < SOURCE_1_MAX_HARVEST_NUM) {
+    //     targetSourceId = SOURCE_1_ID;
+    //   } else if (harvestersPerSource[SOURCE_2_ID] < SOURCE_2_MAX_HARVEST_NUM) {
+    //     targetSourceId = SOURCE_2_ID;
+    //   }
+    // }
+
+    // let ret = Game.spawns[constant.SPAWN_HOME].spawnCreep(bodyParts
+    //   , harvesterRole + Game.time
+    //   , { memory: { role: harvesterRole, targetRoomId: constant.TARGET_ROOM_ID, targetSourceId: targetSourceId } });
+
+    // if (OK == ret) {
+    //   console.log('[generateHarvest]:harvester source target:', targetSourceId);
+    //   return true;
+    // }
+
+    // return false;
   },
   clearDeadMemory: function () {
     for (var name in Memory.creeps) {

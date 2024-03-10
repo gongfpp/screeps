@@ -1,49 +1,43 @@
 [
   {
-    "id": "65e0c8369cf7c4914b5873e0",
+    "id": "65e3f13d123bc6b0d17c38c3",
     "room": {
       "name": "W2N33",
-      "energyAvailable": 500,
-      "energyCapacityAvailable": 500,
+      "energyAvailable": 2300,
+      "energyCapacityAvailable": 2300,
       "visual": {
         "roomName": "W2N33"
       }
     },
     "pos": {
-      "x": 36,
-      "y": 32,
+      "x": 31,
+      "y": 28,
       "roomName": "W2N33"
     },
-    "store": {
-      "energy": 600
-    },
-    "storeCapacity": 2000,
-    "ticksToDecay": 370,
-    "hits": 250000,
-    "hitsMax": 250000,
-    "structureType": "container"
+    "ticksToDecay": 409,
+    "hits": 2800,
+    "hitsMax": 5000,
+    "structureType": "road"
   },
   {
-    "id": "65e0dea3decfd588a3da0a64",
+    "id": "65e4a7e7a6439f77a4008283",
     "room": {
       "name": "W2N33",
-      "energyAvailable": 500,
-      "energyCapacityAvailable": 500,
+      "energyAvailable": 2300,
+      "energyCapacityAvailable": 2300,
       "visual": {
         "roomName": "W2N33"
       }
     },
     "pos": {
-      "x": 35,
-      "y": 32,
+      "x": 31,
+      "y": 28,
       "roomName": "W2N33"
     },
-    "store": {
-      "energy": 1752
-    },
+    "store": {},
     "storeCapacity": 2000,
-    "ticksToDecay": 394,
-    "hits": 250000,
+    "ticksToDecay": 242,
+    "hits": 248200,
     "hitsMax": 250000,
     "structureType": "container"
   }

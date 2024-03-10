@@ -15,11 +15,7 @@ function func() {
 }
 
 module.exports.loop = function () {
-    //TODO : 
-    // 战斗模组
-    // 存特殊礦
-    // 佔基地creep
-    // 拿下隔壁
+ 
 
     func();
 
