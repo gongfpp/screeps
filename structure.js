@@ -36,10 +36,10 @@ module.exports = {
         // }
     },
     linkDo: function () {
-        this.LINK_FROM_GROUP.map(sourceLinkName => {
+        this.LINK_FROM_GROUP.forEach(sourceLinkName => {
             sourceLink = Game.getObjectById(sourceLinkName);
             if (sourceLink.store.getUsedCapacity(RESOURCE_ENERGY) > sourceLink.store.getFreeCapacity(RESOURCE_ENERGY)) {
-                this.LINK_TO_GROUP.map(targetLinkName => {
+                this.LINK_TO_GROUP.forEach(targetLinkName => {
                     targetLink = Game.getObjectById(targetLinkName);
                     if (targetLink.store.getUsedCapacity(RESOURCE_ENERGY) < 400) {
                         sourceLink.transferEnergy(targetLink);

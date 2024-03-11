@@ -28,8 +28,8 @@ module.exports = {
             if (this.pickupByChance(creep)) {
                 return 'pickupByChance';
             }
-
-
+                            
+            
             //specific by role 
             if (creep.memory.role == 'harvester') {
                 did = this.harvesterDo(creep);
@@ -58,7 +58,10 @@ module.exports = {
 
             //common suffixbehavior
             // console.log(`${creep.name} do ${did}`);
-
+            if (creep.memory.targetRoomId && creep.memory.targetRoomId != creep.room.name) {
+                creep.moveTo(new RoomPosition(25, 20, creep.memory.targetRoomId), { visualizePathStyle: { stroke: '#ff73b3' } });
+                return 'moveRoom';
+            }
 
         }
     },

@@ -1,44 +1,674 @@
 [
   {
-    "id": "65e3f13d123bc6b0d17c38c3",
     "room": {
-      "name": "W2N33",
-      "energyAvailable": 2300,
-      "energyCapacityAvailable": 2300,
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
       "visual": {
-        "roomName": "W2N33"
+        "roomName": "W3N33"
       }
     },
     "pos": {
-      "x": 31,
-      "y": 28,
-      "roomName": "W2N33"
+      "x": 48,
+      "y": 26,
+      "roomName": "W3N33"
     },
-    "ticksToDecay": 409,
-    "hits": 2800,
-    "hitsMax": 5000,
-    "structureType": "road"
+    "id": "65e888f6bef28100125a1d8d",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
   },
   {
-    "id": "65e4a7e7a6439f77a4008283",
     "room": {
-      "name": "W2N33",
-      "energyAvailable": 2300,
-      "energyCapacityAvailable": 2300,
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
       "visual": {
-        "roomName": "W2N33"
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 47,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888f7bef28100125a1d8e",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 46,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888f8bef28100125a1d8f",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 45,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888f8bef28100125a1d90",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 44,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888f9b380eb0012daabcf",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 43,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888f99f26eb001260a47f",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 42,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888f9bef28100125a1d91",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 41,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888fabef28100125a1d92",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 39,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888fa9f26eb001260a480",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 40,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888fbbef28100125a1d93",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 38,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888fbb380eb0012daabd0",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 37,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888fc9f26eb001260a481",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 36,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888fcbef28100125a1d94",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 35,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888fdb380eb0012daabd1",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 34,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888fdbef28100125a1d95",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 32,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888feb380eb0012daabd2",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 33,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888febef28100125a1d96",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
       }
     },
     "pos": {
       "x": 31,
-      "y": 28,
-      "roomName": "W2N33"
+      "y": 26,
+      "roomName": "W3N33"
     },
-    "store": {},
-    "storeCapacity": 2000,
-    "ticksToDecay": 242,
-    "hits": 248200,
-    "hitsMax": 250000,
-    "structureType": "container"
+    "id": "65e888feb380eb0012daabd3",
+    "progress": 0,
+    "progressTotal": 1500,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 30,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65e888ffbef28100125a1d97",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 29,
+      "y": 27,
+      "roomName": "W3N33"
+    },
+    "id": "65e889029f26eb001260a482",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 28,
+      "y": 28,
+      "roomName": "W3N33"
+    },
+    "id": "65e88903b380eb0012daabd4",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 27,
+      "y": 29,
+      "roomName": "W3N33"
+    },
+    "id": "65e88903bef28100125a1d98",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 26,
+      "y": 29,
+      "roomName": "W3N33"
+    },
+    "id": "65e88904bef28100125a1d99",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 25,
+      "y": 29,
+      "roomName": "W3N33"
+    },
+    "id": "65e88904bef28100125a1d9a",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 24,
+      "y": 29,
+      "roomName": "W3N33"
+    },
+    "id": "65e88905b380eb0012daabd5",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 23,
+      "y": 30,
+      "roomName": "W3N33"
+    },
+    "id": "65e88918b380eb0012daabd6",
+    "progress": 0,
+    "progressTotal": 300,
+    "structureType": "road",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 28,
+      "y": 27,
+      "roomName": "W3N33"
+    },
+    "id": "65eee8dddd3ec4001210cf6a",
+    "progress": 0,
+    "progressTotal": 5000,
+    "structureType": "container",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
+  },
+  {
+    "room": {
+      "name": "W3N33",
+      "energyAvailable": 0,
+      "energyCapacityAvailable": 0,
+      "visual": {
+        "roomName": "W3N33"
+      }
+    },
+    "pos": {
+      "x": 29,
+      "y": 26,
+      "roomName": "W3N33"
+    },
+    "id": "65eee8e2b406110012a3091f",
+    "progress": 0,
+    "progressTotal": 5000,
+    "structureType": "container",
+    "name": null,
+    "owner": {
+      "username": "gongfpp"
+    },
+    "my": true
   }
 ]

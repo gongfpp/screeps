@@ -20,6 +20,7 @@ const SOURCE_ID_GROUP = [SOURCE_1_ID, SOURCE_2_ID, SOURCE_3_ID];
 
 const BASEHARVESTER_MAX_NUM = SOURCE_1_MAX_HARVEST_NUM + SOURCE_2_MAX_HARVEST_NUM;
 
+//harvester
 const HARVESTER_BODYPART_300 = [WORK, WORK, CARRY, MOVE];
 const HARVESTER_BODYPART_550 = [WORK, WORK, CARRY, CARRY, MOVE, MOVE];
 const HARVESTER_BODYPART_800 = [
@@ -37,6 +38,7 @@ const HARVESTER_BODYPART = [[]
   , HARVESTER_BODYPART_300, HARVESTER_BODYPART_550, HARVESTER_BODYPART_800
   , HARVESTER_BODYPART_KING, HARVESTER_BODYPART_KING, HARVESTER_BODYPART_KING];
 
+//hauler for upgrader and xiangzi 
 const HAULER_BODYPART_300 = [WORK, CARRY, CARRY, MOVE, MOVE];
 const HAULER_BODYPART_550 = [WORK, WORK, CARRY, CARRY, MOVE, MOVE];
 const HAULER_BODYPART_800 = [
@@ -96,8 +98,8 @@ module.exports = {
   upgraderMaxNum: 0,
   xiangziMaxNum: 1,
   minerMaxNum: 0,
-  // claimerMaxNum: 0,
-  claimerMaxNum: constant.ROOM_GROUPS_ID.length,
+  claimerMaxNum: 0,
+  // claimerMaxNum: constant.ROOM_GROUPS_ID.length,
   upgraderFixIfNoBuilderExist: 1,
   upgraderFixIfStorageHalfFull: 0,
   creepLevel: 6,
@@ -162,7 +164,14 @@ module.exports = {
       return 'supporter';
     }
 
+    
     const constructionSites = Game.rooms[constant.TARGET_ROOM_ID].find(FIND_MY_CONSTRUCTION_SITES);
+    // constant.ROOM_GROUPS_ID.forEach(roomId => {
+    //   const room = Game.rooms[roomId];
+    //   if(room){
+    //     constructionSites.push(...room.find(FIND_MY_CONSTRUCTION_SITES));
+    //   }
+    // });
     //builder
     const builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     if (constructionSites.length > 1 && builders.length < constant.BUILDER_MAX_NUM) {
@@ -212,11 +221,11 @@ module.exports = {
 
     return false;
   },
-  createCreep(roleName, bodyParts) {
+  createCreep(roleName, bodyParts, targetRoomId = constant.TARGET_ROOM_ID) {
     ret = Game.spawns[constant.SPAWN_HOME].spawnCreep(
       bodyParts
       , roleName + Game.time
-      , { memory: { role: roleName } });
+      , { memory: { role: roleName, targetRoomId: targetRoomId } });
     if (ret == OK) {
       return true;
     }
